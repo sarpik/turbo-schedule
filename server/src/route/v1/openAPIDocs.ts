@@ -32,6 +32,10 @@ export const openAPIDocsJSONHandler: RequestHandler = async (_req, res, next) =>
 };
 
 export const openAPIDocsHTMLHandler: RequestHandler = (_req, res, next) => {
+	if (res.headersSent) {
+		return next();
+	}
+
 	try {
 		/**
 		 * see https://github.com/Redocly/redoc#deployment
