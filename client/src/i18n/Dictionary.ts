@@ -31,4 +31,7 @@ export interface Dictionary {
 	Rooms: string;
 	toCompactString: (items: string[]) => string;
 	"Made with love by (__html)": string;
+	Availability: string;
+	Common: string;
+	"Common Availability": string;
 }

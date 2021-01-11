@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 
-import React, { FC, forwardRef } from "react";
+import React, { FC, forwardRef, useRef, useState, useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { css } from "emotion";
 
@@ -11,6 +11,8 @@ import { LangSelect } from "./LangSelect";
 import { useTranslation } from "../../i18n/useTranslation";
 // eslint-disable-next-line import/no-cycle
 import { NavbarMobile } from "./NavbarMobile";
+import { CurrentLangContext } from "../currentLangContext/currentLangContext";
+import { Badge } from "../../common/Badge";
 
 interface Props {
 	search?: SearchProps;
@@ -95,7 +97,14 @@ const NavbarDesktop = forwardRef<HTMLElement, { SearchElement?: JSX.Element }>((
 					font-size: 1.2em;
 				`}
 			>
-				<NavbarLinks />
+				<NavbarLinksOne />
+
+				<NavbarLinksTwo
+					className={css`
+						margin-left: auto;
+					`}
+				/>
+
 				<li>
 					<LangSelect />
 				</li>
@@ -104,10 +113,90 @@ const NavbarDesktop = forwardRef<HTMLElement, { SearchElement?: JSX.Element }>((
 	);
 });
 
-export const NavbarLinks: FC<{}> = () => (
-	<>
-		{/* SOON™ */}
-		{/* <li>
+/** left / top */
+export const NavbarLinksOne: FC<React.HTMLProps<HTMLLIElement>> = (firstElementProps) => {
+	const t = useTranslation();
+	const { currentLang } = useContext(CurrentLangContext);
+
+	const line1Ref = useRef<HTMLSpanElement>(null);
+	const line2Ref = useRef<HTMLSpanElement>(null);
+
+	// const gapWidth: number =	Math.abs((line1Ref.current?.clientWidth ?? 0) - (line2Ref.current?.clientWidth ?? 0))
+
+	const calcGapWidth = useCallback<() => number>(
+		// eslint-disable-next-line arrow-body-style
+		() => {
+			return (
+				Math.round(
+					Math.abs(
+						(line1Ref.current?.getBoundingClientRect().width ?? 0) -
+							(line2Ref.current?.getBoundingClientRect().width ?? 0)
+					) / 2
+				) ||
+				{ lt: 32, en: 7 }[currentLang] ||
+				0
+			);
+		},
+		[currentLang] // eslint-disable-line indent
+	);
+
+	const [gapWidth, setGapWidth] = useState<number>(calcGapWidth());
+
+	useEffect(() => {
+		setGapWidth(calcGapWidth());
+	}, [calcGapWidth, currentLang]);
+
+	console.log("gapWidth", gapWidth, "currLang", currentLang);
+
+	return (
+		<>
+			<li {...firstElementProps}>
+				<Link to="/">{t("Schedule")}</Link>
+			</li>
+			<li>
+				<Link to="/avail">
+					<div>
+						<span
+							className={css`
+								display: inline-flex;
+								flex-direction: column;
+
+								position: relative;
+							`}
+						>
+							{/* {isDesktop ? ( */}
+							<>
+								<span
+									ref={line1Ref}
+									className={css`
+										display: inline-block;
+										width: auto;
+										margin: auto;
+									`}
+								>
+									{t("Common")}
+								</span>
+								<span
+									ref={line2Ref}
+									className={css`
+										text-transform: lowercase;
+									`}
+								>
+									{/* {t("Common")} */}
+									{t("Availability")}
+								</span>
+							</>
+							{/* ) : (
+								<span>{t("Common Availability")}</span>
+							)} */}
+
+							<Badge text="New" gapWidth={gapWidth} />
+						</span>
+					</div>
+				</Link>
+			</li>
+			{/* SOON™ */}
+			{/* <li>
 						<Link
 							to={`/${participant.text}`}
 							className={css`
@@ -121,19 +210,19 @@ export const NavbarLinks: FC<{}> = () => (
 					<li>
 						<Link to={`/${participant.text}/stats`}>{t("Statistics")}</Link>
 					</li> */}
-		{/* SOON™ */}
+			{/* SOON™ */}
+		</>
+	);
+};
+
+/** right / bottom */
+export const NavbarLinksTwo: FC<React.HTMLProps<HTMLLIElement>> = (firstElementProps) => (
+	<>
 		{/* <li
-						className={css`
-							margin-left: auto;
-						`}
 					>
 						<Link to="/about">{t("About")}</Link>
 					</li> */}
-		<li
-			className={css`
-				margin-left: auto;
-			`}
-		>
+		<li {...firstElementProps}>
 			{/* eslint-disable-next-line react/jsx-no-target-blank */}
 			<a href="/api/v1/docs" target="_blank" rel="noopener">
 				API

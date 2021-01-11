@@ -45,4 +45,7 @@ export const en: Dictionary = {
 	toCompactString: (items: string[]): string =>
 		items.length > 1 ? `${items[0]} and ${items.length - 1} more` : items[0],
 	"Made with love by (__html)": `Made with <span aria-label="love">❤</span> by`,
+	Availability: "Availability",
+	Common: "Common",
+	"Common Availability": "Common availability",
 };

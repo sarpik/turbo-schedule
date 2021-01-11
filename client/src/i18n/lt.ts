@@ -46,4 +46,7 @@ export const lt: Dictionary = {
 		items.length > 1 ? `${items[0]} ir dar ${items.length - 1}` : items[0],
 
 	"Made with love by (__html)": `Su <span aria-label="love">❤</span> sukūrė`,
+	Availability: "Prieinamumas" /** TODO IMPROVE lol */,
+	Common: "Bendras",
+	"Common Availability": "Bendras prieinamumas" /** TODO IMPROVE lol */,
 };
