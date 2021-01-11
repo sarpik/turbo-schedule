@@ -16,3 +16,4 @@ export * from "./model/Room";
 export * from "./model/Lesson";
 export * from "./model/Email";
 export * from "./model/ScrapeInfo";
+export * from "./model/Availability";

@@ -10,8 +10,9 @@ import { useMachine } from "@xstate/react";
 import { TweenMax } from "gsap";
 
 // eslint-disable-next-line import/no-cycle
-import { NavbarLinks } from "./Navbar";
+import { NavbarLinksOne, NavbarLinksTwo } from "./Navbar";
 import { Divider } from "../studentSchedule/Divider";
+
 import { useTranslation } from "../../i18n/useTranslation";
 
 import { ReactComponent as Logo } from "../../assets/logo.svg";
@@ -167,7 +168,7 @@ export const NavbarMobile = forwardRef<HTMLElement, { SearchElement?: JSX.Elemen
 					position: fixed;
 					top: 0;
 					left: 0;
-					transform: translateY(-100%);
+					transform: translateY(-200%);
 
 					width: 100vw;
 					height: 100vh;
@@ -192,6 +193,11 @@ export const NavbarMobile = forwardRef<HTMLElement, { SearchElement?: JSX.Elemen
 				>
 					<ul
 						className={css`
+							height: 100%;
+
+							display: flex;
+							flex-direction: column;
+
 							/** all but first <li> */
 							& > * + * {
 								margin-top: 1rem;
@@ -216,6 +222,8 @@ export const NavbarMobile = forwardRef<HTMLElement, { SearchElement?: JSX.Elemen
 							<LangSelect />
 						</li>
 
+						<NavbarLinksOne />
+
 						<Divider
 							className={css`
 								height: 3px;
@@ -223,19 +231,7 @@ export const NavbarMobile = forwardRef<HTMLElement, { SearchElement?: JSX.Elemen
 							`}
 						/>
 
-						<NavbarLinks />
-					</ul>
-
-					<ul>
-						<li
-							className={css`
-								& > * {
-									display: inline-block;
-									width: 100%;
-									padding: 1rem auto;
-								}
-							`}
-						/>
+						<NavbarLinksTwo />
 					</ul>
 				</section>
 

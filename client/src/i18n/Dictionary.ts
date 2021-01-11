@@ -31,4 +31,14 @@ export interface Dictionary {
 	Rooms: string;
 	toCompactString: (items: string[]) => string;
 	"Made with love by (__html)": string;
+	Availability: string;
+	Common: string;
+	"There're often situations when you have a group of people and want to find a common time to meet": string;
+	"Common Availability": string;
+	"is exactly the tool you need": string;
+	"red - bussy; blue - available": string;
+	"white - bussy; black - available": string;
+	participants: (count: number) => string;
+	"Click me!": string;
+	"Enter the participant names": string;
 }
