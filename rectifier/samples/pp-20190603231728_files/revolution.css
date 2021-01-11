@@ -1,0 +1,61 @@
+/*-----------------------------------------------------------------------------
+
+KENBURNER RESPONSIVE BASIC STYLES OF HTML DOCUMENT
+
+Screen Stylesheet
+
+version:   	1.0
+date:      	07/27/11
+author:		themepunch
+email:     	support@themepunch.com
+website:   	http://www.themepunch.com
+-----------------------------------------------------------------------------*/
+
+
+
+.boxedcontainer		{	max-width: 1170px; margin:auto; padding:0px 30px;}
+
+/*********************************************
+	-	SETTINGS FOR BANNER CONTAINERS	-
+**********************************************/
+
+.tp-banner-container{
+	width:100%;
+	position:relative;
+	padding:0;
+
+}
+
+.tp-banner{
+	width:100%;
+	position:relative;
+}
+
+.tp-banner-fullscreen-container {
+		width:100%;
+		position:relative;
+		padding:0;
+}
+
+
+/*
+     FILE ARCHIVED ON 01:01:28 Jan 29, 2019 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 16:55:07 Aug 15, 2020.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  CDXLines.iter: 17.251 (3)
+  RedisCDXSource: 2.38
+  esindex: 0.035
+  exclusion.robots: 0.162
+  PetaboxLoader3.datanode: 125.246 (5)
+  LoadShardBlock: 85.728 (3)
+  PetaboxLoader3.resolve: 234.245 (2)
+  exclusion.robots.policy: 0.151
+  load_resource: 317.959
+  captures_list: 110.406
+*/

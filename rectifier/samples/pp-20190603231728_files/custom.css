@@ -1,0 +1,242 @@
+.number-boxes span.coloured,
+.widget form input[type="submit"],
+.donate > a:before,
+.category-img ul li:hover:before,
+.featured-sermon-title,
+.member-detail > ul li a:hover,
+.mejs-controls .mejs-time-rail .mejs-time-loaded ,
+.social-media li a:hover,
+.theme-form > input[type="submit"],
+.button:before,
+.comments > ul li .avatar:after,
+.image > a,
+.leave-comment > form input[type="submit"],
+.service-block-inner > a:hover:before,
+.widget-blog-img:before,
+.gallery-widget a:before,
+.gallery-title:before,
+.gallery-title:after,
+.cart-list > li > input[type="submit"]:hover, 
+.checkout-content input[type="submit"]:hover ,
+.slide1-box:before,
+.quick-help > span ,
+.single-page > a:hover,
+.news-date,
+.pagination > li:first-child a:hover, 
+.pagination > li:last-child a:hover,
+.donation-appeal > a:hover,
+.product-bottom span,
+.coloured:before,
+.popup-title,
+.collected-amount span i,
+.amount-selection > a, .amount-selection button,
+.news-details:before,
+.latest-news-carousel .owl-buttons > div:hover,
+button.button2:hover,
+.service-block > a,
+.sermon-media li:hover,
+.hover-in .sermon-media li:hover,
+.event-date span,
+.latest-tweets > span,
+.prayer-request input[type="submit"], 
+.newsletter-signup input[type="submit"],
+.donation-box,
+.tab-style .nav,
+.welcome > a,
+nav ul li a:before,
+.pastors-message .sermon-media li:hover,
+.cart-dropdown > ul li a.cart-drop-btn:hover,
+.cart-dropdown > p:before,
+.header-timer > p,
+footer .widget-title > h4:before,
+.widget .about .social-media li a:hover,
+.menu-btn,
+#fotter_msg,
+.slide8-button:hover,
+#place_order.button:hover,
+.woocommerce span.onsale, .woocommerce-page span.onsale,
+.woocommerce-page .woocommerce-info:before,
+#masonay-nav li a.active,
+.slide10-button,
+.slide11-box.coloured-box,
+.item-detail:before,
+a.button2:hover,
+.item-detail > a,
+.simple-service > a:hover,
+.button3:hover,
+.survey > h3,
+section#options ul.option-set li a.selected,
+.animal-detail > ul li:hover a,
+.iconic-service:hover > span,
+.coloured-donation:before,
+.coloured-donation a:hover,
+.widget .coloured-donation,
+.widget .sermon-media li a:hover,
+.message-carousel .owl-buttons > div:hover,
+.booking-btn,
+.donation-bg,
+form.wpcf7-form p .wpcf7-submit,
+.gform_wrapper .gform_footer input.button,
+.gform_wrapper .gform_footer input[type="submit"],
+#buddypress input[type="submit"],
+.wpb_content_element .wpb_tabs_nav,
+.categories_filter li.active a,
+.cart-btn,
+.responsive-prayer > p,
+.responsive-btn,
+.responsive-contact a.active,
+.header-timer a,
+.payment-choices > a.active,
+.periods li.select:before{
+	background-color: #b6861b;
+}
+a,a:hover,
+.donate h2 span,
+.service-block-inner > h3,
+.latest-serm > h2 span,
+.title > h2 span,
+.parallax-text h3 span,
+.book h3 a:hover,
+.book > a:hover,
+.contact li a i:hover,
+.bottom-footer p a,
+.blog-detail > h3 a:hover,
+.blog-detail > a:hover,
+.sermon > h3 a:hover,
+.featured-sermon h3 a:hover,
+.donation-progress > h2 span,
+.featured-sermon span i,
+.member-detail > span,
+.member-detail > h3 a:hover,
+.percentage:hover h5,
+.title2 h2 span ,
+.info-block:hover i,
+.page-top h1 span,
+.event-detail > ul li a i,
+.event-detail > span i,
+.pastor-info > h4 span,
+.share-this h5 i,
+.comments > ul li h5 i span,
+.leave-comment > h4 i,
+.widget-blog > p a:hover,
+.toggle-item.activate h2,
+.toggle-item.activate h2 i,
+.thanks-message > span,
+.blog-detail > a,
+.thanks-message h5,
+.comment-widget h5 a:hover,
+.slide2-title i,
+.slide3-title span,
+.news h3 a:hover,
+.search-page > h4 span,
+.error-page h4 i,
+.quick-help h5 span,
+.amount ins i,
+.donation-appeal h3 span,
+.product h3 a:hover,
+.category-block > h3 a:hover,
+.service-image i,
+.service-block > a:hover,
+.service-block:hover > h3,
+.upcoming-event h3 i,
+.story-detail > h3 a:hover,
+.blog-list > h3 a:hover,
+.about h4 i,
+.parallax-title h3 span,
+.welcome h1 span,
+nav ul li a:after ,
+.pastors-message span,
+.cart-dropdown > ul li a.cart-drop-btn,
+.cart-dropdown > p span,
+.widget .contact li span,
+.widget-blog > h6 a:hover,
+.event > h3 a:hover,
+.widget-blog > span,
+.sermon-media li i,
+.pagination > li span,
+.slide10-title span,
+.slide10-button:hover,
+.welcome > a:hover,
+.slide11-title span,
+.item-detail > h3 a:hover,
+h4.new-title a:hover,
+.sermon h3 a:hover,
+.event-count > h4 a:hover,
+.widget li a:hover,
+.title3 h2 span,
+.simple-service:hover > h3,
+.simple-service:hover .simple-icon > span,
+.simple-blog > h4 a:hover,
+.welcome h1 i,
+.needed h5,
+.survey-report > h5,
+.online-store > h4 span,
+.animal-img > span strong,
+.iconic-service:hover > h3,
+.pop-message > span,
+.title5 > h2 span,
+#buddypress div.item-list-tabs ul li.current a,
+.wpb_content_element .wpb_tabs_nav li.ui-tabs-active a,
+.header-timer > p:hover a,
+.responsive-contact p i,
+.responsive-cart span,
+.periods li.select{
+	color: #b6861b;
+}
+.service-block:hover,
+.widget-title:before,
+.service-block > a,
+.about .nav li.active a,
+.welcome > a,
+.cart-dropdown > ul p,
+.cart-dropdown > ul li a.cart-drop-btn,
+.woocommerce .woocommerce-info, .woocommerce-page .woocommerce-info,
+.slide8-button:hover,
+.item-detail > a,
+.simple-service > a,
+.carousel-item .sermon-media li:hover,
+.button3,
+.animal-detail > ul li:hover a,
+.title5 > h2 span{
+	border-color: #b6861b; 
+}
+.cart-dropdown > ul:after,
+.ticket-booking .booking-btn span:after  {
+	border-bottom-color: #b6861b; 
+}
+
+.responsive-contact a.active:before{
+	border-left-color: #b6861b; 
+}
+.responsive-contact a.mail-btn.active:before{
+	border-right-color:  #b6861b;
+}
+.pastors-message .button3 a{
+    color:white;
+}
+
+.ls-slide .ls-1 p strong{
+    font-style:normal; 
+    color:#eff136;
+}
+/*
+     FILE ARCHIVED ON 09:18:50 Jan 21, 2019 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 16:55:08 Aug 15, 2020.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  PetaboxLoader3.datanode: 336.053 (5)
+  captures_list: 278.873
+  exclusion.robots.policy: 0.142
+  LoadShardBlock: 232.794 (3)
+  load_resource: 334.726
+  esindex: 0.01
+  exclusion.robots: 0.152
+  RedisCDXSource: 26.233
+  CDXLines.iter: 17.307 (3)
+  PetaboxLoader3.resolve: 174.5 (2)
+*/
