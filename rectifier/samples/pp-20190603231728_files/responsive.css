@@ -1,0 +1,915 @@
+@media (max-width:1200px){
+.theme-layout.boxed{
+	width:1030px;
+}
+.blog-post{
+    padding-bottom: 17px;
+}
+.blog-detail {
+    padding: 15px 15px 25px 0;
+}
+.featured-semon-title {
+    min-height: 211px;
+}
+.products-page .row > div {
+    float: left;
+    width: 25%;
+}
+.team-single .social-media {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.error-page h4 {
+    font-size: 250px;
+}
+.header-timer > p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
+}
+.header-timer ul {
+    margin-left: 10px;
+    padding-right: 10px;
+}
+.topbar .container > p {
+    margin-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+.header-timer{
+    margin-right: 10px;
+}
+.needed > span {
+    width: 70px;
+    height: 70px;
+    line-height: 60px;
+    font-size: 20px;
+}
+.needed h5 {
+    font-size: 20px;
+    margin-top: 10px;
+}
+.needed > h6 {
+    font-size: 11px;
+}
+.booking-counter i {
+    font-size: 30px;
+}
+.booking-counter > ul li {
+    padding: 20px 5px;
+    width: 60px;
+}
+} 
+
+
+@media (min-width:768px) and (max-width:980px){
+
+.column {
+    float: left;
+    margin-bottom: 50px;
+    width: 100%;
+}
+.column:last-child {
+    margin-bottom: 0;
+}
+.parallax-text h4 {
+    font-size: 23px;
+}
+.parallax-text h3 {
+    font-size: 45px;
+}
+.message .row > div {
+    float: left;
+    width: 50%;
+}
+.flickr > div {
+    float: left;
+    width: 25%;
+}
+.widget {
+    margin-bottom: 50px;
+}
+.blog-post .row > div {
+    float: left;
+    width: 50%;
+}
+.pastors-detail > div {
+    float: left;
+    margin-bottom: 30px;
+    width: 100%;
+}
+.pastors-detail > div:last-child{
+    margin-bottom: 0;
+}
+.pastors-detail h6 {
+    margin-top: 0;
+}
+.featured-sermon-title {
+    width: 100%;
+    left: 0;
+}
+.featured-sermon {
+    width: 100%;
+}
+.featured-sermon-box:after{display: none;}
+.featured-sermon .row > div.col-md-2 {
+    float: left;
+    width: 25%;
+}
+.featured-sermon img{
+    margin-top: 0;
+}
+.featured-sermon .row > div.col-md-10 {
+    float: left;
+    width: 75%;
+}
+.sermon .row > div.col-md-3 {
+    float: left;
+    width: 25%;
+}
+.sermon .row > div.col-md-9 {
+    float: left;
+    width: 75%;
+}
+.event-box .row > div {
+    float: left;
+    width: 50%;
+}
+.events-gridview .row > div {
+    float: left;
+    width: 50%;
+}
+.team-page .row > div {
+    float: left;
+    width: 50%;
+}
+.mas-gallery .isotope-item {
+  float: left;
+  width: 50%;
+}
+.products-page .row > div {
+    float: left;
+    width: 33.334%;
+}
+.slide3-black{
+    height: 165px;
+}
+.gallery-widget > div {
+    float: left;
+    width: 16.6665%;
+}
+.news {
+    padding: 75px 0 0 30px;
+}
+.news-date {
+    height: 75px;
+    padding: 10px 20px;
+    width: 100%;
+}
+.news-date > span {
+    width: 100%;
+    padding: 10px;
+}
+.news .row > div {
+    float: left;
+    width: 50%;
+}
+.tab-style .nav li {
+    margin-right: 0;
+    text-align: center;
+    width: 25%;
+}
+.comments > ul li .avatar {
+    display: table;
+    float: none;
+    margin: 0 auto;
+}
+.checkout-content .row > div {
+    float: left;
+    width: 100%;
+}
+.theme-layout.boxed {
+    width: 90%;
+}
+.error-page h4 {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.single-product .tab-content img {
+    width: 100%;
+}
+.single-product .nav.nav-tabs li {
+    margin: 0;
+    padding: 0 10px 20px;
+    width: 25%;
+}
+.single-product .nav.nav-tabs li a {
+    height: auto;
+    width: 100%;
+}
+.category-img ul {
+    max-width: 25%;
+}
+.featured-sermon .row > div > span {
+    float: left;
+    width: 100%;
+    text-align: center;
+}
+.featured-sermon .sermon-media {
+    text-align: center;
+    width: 100%;
+}
+.featured-sermon .sermon-media li {
+    display: inline-table;
+    float: none;
+}
+.donation-popup {
+    width: 90%;
+    left: 5%;
+    margin: 0;
+}
+.collected {
+    width: 100%;
+}
+.amount-selection {
+    width: 100%;
+    padding: 0 30px 50px;
+}
+.needed-amount {
+    float: left;
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.popup-title {
+    padding: 35px;
+}
+.needed-amount > i {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+.needed-amount > span {
+    height: 50px;
+    text-align: center;
+}
+.needed-amount > span i {
+    display: inline-block;
+    float: none;
+    font-size: 16px;
+    height: 40px;
+    line-height: 39px;
+    width: 30px;
+}
+.donation-box {
+    padding: 0;
+}
+.donation-box .needed-amount.collected-amt {
+    width: 100%;
+}
+.selections input {
+    margin: 10px 0;
+}
+.featured-sermon-box {
+    padding-left: 0;
+    padding-top: 110px;
+}
+.about .nav li{
+    float: left;
+    width: 33.334%;
+    padding: 0 5px;
+}
+.prayer-request input[type="text"],.prayer-request input[type="submit"] {
+    width: 100%;
+    background-image: none;
+    text-align: center;
+}
+.donation-box {
+    padding: 0;
+}
+.donation-box .needed-amount.collected-amt {
+    width: 100%;
+}
+.timing.column {
+    height: 77px;
+}
+.pastors-message > div {
+    float: left;
+    width: 50%;
+}
+
+.pastors-message > div.col-md-9{
+    padding-bottom:15px;
+}
+.pastors-message h4,.pastors-message span, .pastors-message p {
+    padding-right: 20px;
+}
+.about .nav{
+    margin: 20px 0 0;
+}
+.survey {
+    margin: 0;
+}
+.masonary-blog > div {
+    float: left;
+    width: 50%;
+}
+.newsletter-signup input[type="text"],
+.newsletter-signup input[type="submit"]{
+    width: 100%;
+}
+
+.top-adds > .row > div {
+    float: left;
+    width: 33.334%;
+}
+.online-store {
+    padding: 40px 20px;
+}
+.masonary-product > div {
+    float: left;
+    width: 50%;
+}
+.partners > div {
+    float: left;
+    width: 33.334%;
+}
+
+
+.ticket-booking .row > div {
+    float: left;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+.booking-btn {
+    display: table;
+    float: none;
+    margin: 0 auto;
+}
+.booking-counter {
+    display: table;
+    float: none;
+    margin: 0 auto;
+    width: auto;
+}
+.coloured-donation.overlap {
+    margin: 0;
+    padding: 10px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+}
+.donation-bg {
+    text-align: center;
+}
+.donation-bar h3{
+    width: 100%;
+}
+header{display:none}
+.responsive-header{display:block;}
+}
+
+
+
+@media (max-width:767px){
+.theme-layout.boxed {
+    width: 810px;
+}
+.block .container,
+.sidebar-page .container {
+    padding: 0 15px;
+}
+.column {
+    float: left;
+    margin-bottom: 50px;
+    width: 100%;
+}
+.column:last-child {
+    margin-bottom: 0;
+}
+.parallax-text h4 {
+    font-size: 23px;
+}
+.parallax-text h3 {
+    font-size: 45px;
+}
+.message .row > div {
+    width: 50%;
+    float: left;
+}
+.flickr > div {
+    float: left;
+    width: 25%;
+}
+.widget {
+    margin-bottom: 50px;
+}
+.blog-post .row > div {
+    float: left;
+    width: 50%;
+}
+.pastors-detail > div {
+    float: left;
+    margin-bottom: 30px;
+    width: 100%;
+}
+.pastors-detail > div:last-child{
+    margin-bottom: 0;
+}
+.pastors-detail h6 {
+    margin-top: 0;
+}
+.pastors-message > h2 {
+    font-size: 30px;
+}
+.pastors-detail h5 {
+    margin: 10px 0;
+}
+.featured-sermon-title {
+    width: 100%;
+    left: 0;
+}
+.featured-sermon {
+    width: 100%;
+}
+
+.featured-sermon-box:after{display: none;}
+.featured-sermon .row > div.col-md-2 {
+    float: left;
+    width: 40%;
+}
+.featured-sermon img{
+    margin-top: 0;
+}
+.featured-sermon .row > div.col-md-10 {
+    float: left;
+    width: 60%;
+}
+.sermon .row > div.col-md-3 {
+    float: left;
+    width: 25%;
+}
+.sermon .row > div.col-md-9 {
+    float: left;
+    width: 75%;
+}
+.event-box .row > div {
+    float: left;
+    width: 100%;
+}
+.events-gridview .row > div {
+    float: left;
+    width: 100%;
+}
+.team-page .row > div {
+    float: left;
+    width: 50%;
+}
+.mas-gallery .isotope-item {
+  float: left;
+  width: 100%;
+}
+.products-page .row > div {
+    float: left;
+    width: 50%;
+}
+.slide3-black{
+    height: 150px;
+}
+.slide3-desc{
+    display: none;
+}
+.slide2-round{
+    display: none;
+}
+.gallery-widget > div {
+    float: left;
+    width: 25%;
+}
+.donation-progress > h2 {
+    font-size: 25px;
+}
+.donation-progress > p {
+    width: 100%;
+}
+.parallax-text > p {
+    width: 100%;
+}
+.twitter-icon {
+    margin: 0 auto 30px;
+    display: table;
+    float: none;
+}
+.tweet-carousel {
+    padding-left: 0;
+    float: left;
+    margin-top: 0;
+}
+.tweet-text{
+    padding-left: 0;
+    text-align: center;
+}
+.tweet-text > span{
+    float: right;
+}
+.news {
+    padding: 75px 0 0 30px;
+}
+.news-date {
+    height: 75px;
+    padding: 10px 20px;
+    width: 100%;
+}
+.news-date > span {
+    width: 100%;
+    padding: 10px;
+}
+.news .row > div {
+    float: left;
+    width: 50%;
+}
+.tab-style .nav li{
+    width: 100%;
+}
+.comments > ul li .avatar {
+    display: table;
+    float: none;
+    margin: 0 auto;
+}
+.comments > ul li h5,.comments > ul li h5 i{
+    float: left;
+    width: 100%;
+    text-align: center;
+}
+.member-img{
+    width: 100%;
+}
+.team-detail {
+    width: 100%;
+}
+.team-list > li, .team-list > li:nth-child(2n+1) {
+    border: 0 none;
+    border-radius: 0;
+    width: 100%;
+}
+.checkout-content .row > div {
+    float: left;
+    width: 100%;
+}
+.theme-layout.boxed {
+    width: 90%;
+}
+.cart-table {
+    overflow-x:scroll; 
+}
+.error-page h4 {
+    float: left;
+    text-align: center;
+    width: 100%;
+    font-size: 150px;
+}
+.error-page h3 {
+    font-size: 40px;
+}
+.single-product .tab-content img {
+    width: 100%;
+}
+.single-product .nav.nav-tabs li {
+    margin: 0;
+    padding: 0 10px 20px;
+    width: 25%;
+}
+.single-product .nav.nav-tabs li a {
+    height: auto;
+    width: 100%;
+}
+.sermon-single h2,.amount{
+    width: 100%;
+}
+.category-img ul {
+    max-width: 25%;
+}
+.featured-sermon .row > div > span {
+    float: left;
+    width: 100%;
+    text-align: center;
+}
+.featured-sermon .sermon-media {
+    text-align: center;
+    width: 100%;
+}
+.featured-sermon .sermon-media li {
+    display: inline-table;
+    float: none;
+}
+.donation-popup {
+    width: 90%;
+    left: 5%;
+    margin: 0;
+}
+.collected {
+    width: 100%;
+}
+.amount-selection {
+    width: 100%;
+    padding: 0 30px 50px;
+}
+.needed-amount {
+    float: left;
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.popup-title {
+    padding: 35px;
+}
+.needed-amount > i {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+.needed-amount > span {
+    height: 50px;
+    text-align: center;
+}
+.needed-amount > span i {
+    display: inline-block;
+    float: none;
+    font-size: 16px;
+    height: 40px;
+    line-height: 39px;
+    width: 30px;
+}
+.donation-box {
+    padding: 0;
+}
+.donation-box .needed-amount.collected-amt {
+    width: 100%;
+}
+.featured-sermon-box,.featured-sermon-box.overlap {
+    padding-left: 0;
+    padding-top: 110px;
+    margin-top: 80px;
+    float: left;
+    width: 100%;
+    display: block;
+}
+.event > span {
+    width: 100%;
+    margin: 10px 0 0;
+    float: left;
+}
+.about .nav li{
+    float: left;
+    width: 33.334%;
+    padding: 0 5px;
+}
+.prayer-request input[type="text"],.prayer-request input[type="submit"] {
+    width: 100%;
+    background-image: none;
+    text-align: center;
+}
+.timing.column {
+    height: 77px;
+}
+.pastors-message > div {
+    float: left;
+    width: 100%;
+}
+    .pastors-message > div.col-md-9 {
+        padding-bottom:15px;
+    }
+.pastors-message h4,.pastors-message span, .pastors-message p {
+    padding: 0 20px;
+}
+.pastors-message ul.sermon-media {
+    margin: 20px auto 30px;
+    display: table;
+    float: none;
+}
+.about .nav{
+    margin: 20px 0 0;
+}
+.slide7-box {
+    padding: 10px !important;
+}
+.slide7-box p {
+    display: none;
+}
+.slide8-quote i{
+    font-size: 12px;
+}
+.survey {
+    margin: 0;
+}
+.masonary-blog > div {
+    float: left;
+    width: 50%;
+}
+.newsletter-signup input[type="text"],
+.newsletter-signup input[type="submit"]{
+    width: 100%;
+}
+.top-adds > .row > div {
+    float: left;
+    width: 100%;
+}
+.online-store {
+    padding: 40px 20px;
+}
+.masonary-product > div {
+    float: left;
+    width: 50%;
+}
+.partners > div {
+    float: left;
+    width: 33.334%;
+}
+section#options ul.option-set li {
+    margin: 3px 0;
+    width: 100%;
+}
+section#options ul.option-set li a{
+    float: left;    
+    width: 100%;
+}
+
+
+.ticket-booking .row > div {
+    float: left;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+.booking-btn {
+    display: table;
+    float: none;
+    margin: 0 auto;
+}
+.booking-counter {
+    display: table;
+    float: none;
+    margin: 0 auto;
+    width: auto;
+}
+.coloured-donation.overlap {
+    margin: 0;
+    padding: 10px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+}
+.donation-bg {
+    text-align: center;
+}
+.donation-bar h3{
+    width: 100%;
+}
+header{display:none}
+.responsive-header{display:block;}
+}
+
+@media (max-width:480px){
+.message .row > div {
+    margin-bottom: 30px;
+    width: 100%;
+    float: left;
+}
+.message .row > div:last-child{
+    margin-bottom: 0;
+}
+.pastors-detail {
+    width: 100%;
+}
+.blog-post .row > div {
+    float: left;
+    width: 100%;
+}
+.blog-detail {
+    border: 1px solid #F0F0F0;
+    margin-top: 30px;
+    padding: 15px 15px 25px;
+}
+.blog-detail > span {
+    left: 50%;
+    /*margin-left: -95px;*/
+}
+.percentage {
+    width: 100%;
+}
+.featured-sermon {
+    padding:20px;
+}
+.featured-sermon .row > div.col-md-2, .featured-sermon .row > div.col-md-10 {
+    width: 100%;
+    margin-bottom: 30px;
+}
+.sermon .row > div.col-md-3,.sermon .row > div.col-md-9 {
+    width: 100%;
+}
+.team-page .row > div {
+    width: 100%;
+}
+.isotope > div{
+    float: left;
+    width: 100%;
+}
+.products-page .row > div {
+    width: 100%;
+}
+.slide1-box {
+    display: none;
+}
+.header-search {
+    margin: 10px auto;
+    width: auto;
+    float: none;
+    display: table;
+}
+.align-right .social-media {
+    margin: 0px auto;
+    width: auto;
+    float: none;
+    display: table;
+}
+.slide3-black{
+    height: 90px;
+}
+.mas-gallery .isotope-item {
+  float: left;
+  width: 100%;
+}
+.number-boxes span {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 17px;
+    margin: 0 2px;
+}
+.news .row > div {
+    width: 100%;
+    margin-bottom: 30px;
+}
+.news {
+    padding: 75px 15px 0;
+}
+.pastors-detail .audioplayer {
+    left: 0;
+    margin: 0;
+    width: 100%;
+}
+.category-img ul {
+    max-width: 50%;
+}
+.masonary-blog > div {
+    width: 100%;
+}
+.title3 {
+    padding: 0 15px;
+}
+.title3 h2 {
+    font-size: 20px;
+}
+.partners > div {
+    width: 100%;
+}
+}
+
+/*
+     FILE ARCHIVED ON 12:07:56 Jan 28, 2019 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 16:55:08 Aug 15, 2020.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  load_resource: 640.213
+  exclusion.robots: 0.134
+  RedisCDXSource: 11.503
+  PetaboxLoader3.datanode: 145.059 (5)
+  exclusion.robots.policy: 0.123
+  LoadShardBlock: 88.622 (3)
+  PetaboxLoader3.resolve: 425.54 (2)
+  CDXLines.iter: 22.547 (3)
+  esindex: 0.011
+  captures_list: 125.724
+*/
