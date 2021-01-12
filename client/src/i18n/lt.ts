@@ -46,4 +46,27 @@ export const lt: Dictionary = {
 		items.length > 1 ? `${items[0]} ir dar ${items.length - 1}` : items[0],
 
 	"Made with love by (__html)": `Su <span aria-label="love">❤</span> sukūrė`,
+	Availability: "Prieinamumas" /** TODO IMPROVE lol */,
+	Common: "Bendras",
+	"Common Availability": "Bendras prieinamumas" /** TODO IMPROVE lol */,
+	"There're often situations when you have a group of people and want to find a common time to meet":
+		"Dažnai būna situacijų, kai turitę žmonių grupę ir norite rasti bendrą laiką susitikimui",
+	"is exactly the tool you need": "būtent tam ir skirtas",
+	"red - bussy; blue - available": "raudona - užimta; mėlyna - laisva",
+	"white - bussy; black - available": "balta - užimta; juoda - laisva",
+	participants: (count) => `${count}`,
+	/** this is a nightmare */
+	// count % 10 === 1
+	// 	? count % 100 !== 11
+	// 		? `${count} dalyvis`
+	// 		: count % 100 >= 10 && count % 100 <= 20
+	// 			? // ? count % 10 === 1
+	// 		  // ? `${count} dalyvis` :
+	// 		  `${count} dalyvių`
+	// 		: count % 10 >= 2 && count % 10 <= 9
+	// 		? `${count} dalyviai`
+	// 		: `${count} dalyvių`
+	// 	: `${count} dalyviai`,
+	"Click me!": "Paspausk mane!",
+	"Enter the participant names": "Įveskite dalyvių vardus",
 };
