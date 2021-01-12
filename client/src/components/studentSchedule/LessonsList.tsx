@@ -5,12 +5,12 @@ import { css } from "emotion";
 
 import { Lesson } from "@turbo-schedule/common";
 
-import { Divider } from "./Divider";
 import { StrikeThrough } from "./StrikeThrough";
 import { useTranslation } from "../../i18n/useTranslation";
 import { ScheduleDay } from "../../utils/selectSchedule";
 import { toNiceTimeIndex } from "../../utils/toNiceTimeIndex";
 import { getLessonStartTime, getLessonEndTime } from "../../utils/getLessonTimes";
+import { Fraction } from "../../common/Fraction";
 
 export const LessonsList: FC<{
 	lessons: Lesson[];
@@ -155,26 +155,12 @@ const LessonsListItem: FC<{
 								}
 							`}
 						>
-							<p>{t("toCompactString")(teachers)}</p>
 							<p>{t("toCompactString")(rooms)}</p>
+							<p>{t("toCompactString")(teachers)}</p>
 						</div>
 
 						<div>
-							<p
-								className={css`
-									margin: 0;
-								`}
-							>
-								{getLessonStartTime(timeIndex)}
-							</p>
-							<Divider height="1px" />
-							<p
-								className={css`
-									margin: 0;
-								`}
-							>
-								{getLessonEndTime(timeIndex)}
-							</p>
+							<Fraction top={getLessonStartTime(timeIndex)} bottom={getLessonEndTime(timeIndex)} />
 						</div>
 					</div>
 				</div>
