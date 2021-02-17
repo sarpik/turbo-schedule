@@ -4,7 +4,7 @@ import {
 	NonUniqueLesson,
 	mergeDuplicateLessons,
 	sortLessons,
-	// delaySync,
+	delaySync,
 } from "@turbo-schedule/common";
 
 import { extractLessonFromTeacher } from "./extractLessons";
@@ -33,7 +33,7 @@ export const scrapeAndDoMagicWithLessonsFromParticipants = async (
 		lessonPromises.map(async (promise) => {
 			const result = await promise;
 
-			// delaySync(200);
+			delaySync(200);
 
 			return result;
 		})

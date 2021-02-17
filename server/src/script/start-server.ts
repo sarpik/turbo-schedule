@@ -14,4 +14,5 @@ process.on("SIGINT", () => {
 	process.exit();
 });
 
-startServer();
+	startServer();
+

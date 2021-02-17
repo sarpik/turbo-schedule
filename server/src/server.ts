@@ -123,3 +123,6 @@ export function startServer({
 
 	return server;
 }
+
+(global as any).app = app;
+(global as any).srv = startServer;

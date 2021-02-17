@@ -4,6 +4,8 @@ import { handleScheduleRowspans } from "./handleScheduleRowspans";
 import { removeUselessTdsFromSchedule } from "./removeUselessTdsFromSchedule";
 import { removeCheerioesCirculars } from "./removeCheerioesCirculars";
 
+let prevTime = new Date().getTime();
+
 const extractStudentName = (scheduleItems: Array<CheerioElement>): string | undefined => {
 	try {
 		/**
@@ -12,7 +14,12 @@ const extractStudentName = (scheduleItems: Array<CheerioElement>): string | unde
 		const studentNameAndClass: string | undefined =
 			scheduleItems[0].children[0].children[0].children[0].children[0].data;
 
-		console.log("studentNameAndClass", studentNameAndClass);
+		const time = new Date().getTime();
+		const diff = time - prevTime;
+
+		console.log("studentNameAndClass", diff, studentNameAndClass);
+
+		prevTime = time;
 
 		return studentNameAndClass;
 	} catch (err) {

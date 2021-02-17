@@ -92,6 +92,10 @@ That's it!
 
 See also [CONTRIBUTING.md](./CONTRIBUTING.md), especially [#known-issues](./CONTRIBUTING.md#known-issues)!
 
+## Deploying to Production
+
+See [./DEPLOYING.md](./DEPLOYING.md)
+
 ## Other accomplishments alongside this project
 
 > Some interesting stuff I've gone through thanks to this project
@@ -103,10 +107,6 @@ I found a tool that could generate API documentation automatically for my `expre
 ### Using github actions (CI) with `semantic-release` & `lerna` and finding the deeply hidden bug
 
 This one's worth a read:D https://github.com/actions/checkout/issues/217
-
-### & other goodies
-
-the list is not exhaustive. I appreciate open source & try to contribute if possible - I encourage you too!
 
 ## License
 

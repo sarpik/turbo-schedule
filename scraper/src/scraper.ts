@@ -85,7 +85,9 @@ export const scrape = async (config: IScraperConfig): Promise<void> => {
 			participants = participants.slice(0, 10);
 		}
 
+		console.log("begin lesson collection");
 		const lessons: Lesson[] = await scrapeAndDoMagicWithLessonsFromParticipants(participants);
+		console.log("end lesson collection");
 
 		/**
 		 * done! Now just save to the database, log info etc.

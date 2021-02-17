@@ -4,10 +4,25 @@ import { IScraperConfig, createScraperConfig } from "./config";
 export * from "./config";
 export * from "./wasScheduleUpdated";
 
-const scraper = async (outDir: string): Promise<void> => {
-	const config: IScraperConfig = createScraperConfig(outDir);
+const isCurrentlyScraping = (): boolean => false;
+const createLockfile = (): void => {};
+const removeLockfile = (): void => {};
 
-	await scrape(config);
+const scraper = async (outDir: string): Promise<void> => {
+	if (isCurrentlyScraping()) {
+		const path: string = "?";
+		throw new Error(`refusing to scrape - lockfile present at ${path}`);
+	}
+
+	try {
+		createLockfile();
+
+		const config: IScraperConfig = createScraperConfig(outDir);
+
+		await scrape(config);
+	} finally {
+		removeLockfile();
+	}
 };
 
 export default scraper;
