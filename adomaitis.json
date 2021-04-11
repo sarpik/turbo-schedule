@@ -1,0 +1,41 @@
+[
+	{
+		"type": "tag",
+		"name": "b",
+		"namespace": "http://www.w3.org/1999/xhtml",
+		"attribs": {},
+		"x-attribsNamespace": {},
+		"x-attribsPrefix": {},
+		"children": [{ "type": "text", "data": "G1a geografija" }]
+	},
+	{
+		"type": "tag",
+		"name": "br",
+		"namespace": "http://www.w3.org/1999/xhtml",
+		"attribs": {},
+		"x-attribsNamespace": {},
+		"x-attribsPrefix": {},
+		"children": []
+	},
+	{ "type": "text", "data": "\nIGa" },
+	{
+		"type": "tag",
+		"name": "br",
+		"namespace": "http://www.w3.org/1999/xhtml",
+		"attribs": {},
+		"x-attribsNamespace": {},
+		"x-attribsPrefix": {},
+		"children": []
+	},
+	{ "type": "text", "data": "\nA103 soc. mokslų" },
+	{
+		"type": "tag",
+		"name": "br",
+		"namespace": "http://www.w3.org/1999/xhtml",
+		"attribs": {},
+		"x-attribsNamespace": {},
+		"x-attribsPrefix": {},
+		"children": []
+	},
+	{ "type": "text", "data": "\n" }
+]
