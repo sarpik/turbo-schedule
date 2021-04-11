@@ -1,23 +1,16 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+import cheerio from "cheerio";
 
-import { getHtml, ParticipantInLesson, NonUniqueLesson, createLessonWithParticipants } from "@turbo-schedule/common";
+import {
+	getHtml,
+	ParticipantInLesson,
+	NonUniqueLesson,
+	createLessonWithParticipants,
+	delayBlockingSync,
+} from "@turbo-schedule/common";
 
 import { prepareScheduleItems } from "./prepareScheduleItems";
 
-/**
- * TODO rename these to `extractLessonsFromGrades5to10` and `extractLessonsFromGrades11to12`
- * and `extractLessonsFromEitherGrades`
- *
- * OR just do it yourself instead of using the factory
- * and expose only one method
- *
- * TODO turn `students` field into `participats` with `{ type: <enum>, text: <string>, isEmpty: <boolean> }`
- * See https://github.com/kiprasmel/turbo-schedule/issues/57
- */
-
-export const extractLessonFromStudent: LessonExtractor = extractLessonsFactory(extractLessonFromStudentParser);
-export const extractLessonFromClass: LessonExtractor = extractLessonsFactory(extractLessonFromClassParser);
-export const extractLessonFromTeacher: LessonExtractor = extractLessonsFactory(extractLessonFromTeacherParser);
+export const extractLessonsFromIndividualHtmlPage: LessonExtractor = extractLessonsFactory(lessonExtractor);
 
 export type LessonParser = (
 	scheduleItem: CheerioElement, //
@@ -35,10 +28,22 @@ function extractLessonsFactory(parser: LessonParser): LessonExtractor {
 		originalScheduleURI: string, //
 		participant: ParticipantInLesson
 	): Promise<NonUniqueLesson[]> => {
-		// scheduleItemsArray = scheduleItemsArray.splice(0, 15);
-		// const lessonsArray: Array<any> = scheduleItemsArray.map((scheduleItem, index) => extractLesson(scheduleItem, index));
-
 		const html: string = await getHtml(originalScheduleURI, "windows-1257");
+
+		/**
+		 * the production server works just fine without delays;
+		 *
+		 * on the development rig, however,
+		 * I keep overhoarding the upstream & getting banned.
+		 *
+		 * It's starting to get confusing as to why some things help
+		 * and some don't, but this seems good.
+		 *
+		 */
+		if (process.env.NODE_ENV !== "production") {
+			const delayMs: number = Number(process.env.SYNC_DELAY) ?? 250;
+			delayBlockingSync(delayMs);
+		}
 
 		const scheduleItemsArray: CheerioElement[] = prepareScheduleItems(html);
 
@@ -76,96 +81,81 @@ function extractLessonsFactory(parser: LessonParser): LessonExtractor {
 	};
 }
 
-function checkIsEmpty(name: string, teacher: string, room: string): boolean {
-	return !name && !teacher && !room;
-}
+const removeNewlineAndTrim = (content: string): string => content.replace(/\n/g, "").trim();
 
-function extractLessonFromStudentParser(
+function lessonExtractor(
 	scheduleItem: CheerioElement, //
 	dayIndex: number,
 	timeIndex: number
 ): NonUniqueLesson[] {
-	const itemWithClassNameTeacherAndRoom = scheduleItem.children[0] /** always skip this */.children;
+	const $ = cheerio(scheduleItem);
+	const text = $.contents()
+		.first()
+		.text();
 
-	const name = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "");
-	const teacher = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[2]?.data ?? "");
-	const room = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
+	const participantEntries = text
+		.split("\n")
+		.map(removeNewlineAndTrim)
+		.filter((t) => /* ignore empty */ !!t && /* ignore multiple slashes */ !/^\/+$/.test(t));
 
-	const isEmpty: boolean = checkIsEmpty(name, teacher, room);
+	const isClass = (t: string): boolean =>
+		/^\d\w/ /* 5a, 5b, 8a, 8b */
+			.test(t) ||
+		/^I+V?G?\w$/ /* IGa, IGb, Ia, IIGa, IIIGa, IVGa */
+			.test(t);
 
-	const participants: ParticipantInLesson[] = [
-		...teacher
-			.split("\n")
-			.map((t) => t.trim())
-			.filter((t) => !!t)
-			.map((t): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["teacher"], text: t })),
-		...room
-			.split("\n")
-			.map((r) => r.trim())
-			.filter((r) => !!r)
-			.map((r): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["room"], text: r })),
-	];
+	const isRoom = (t: string): boolean =>
+		/^\w\d+/ /* A201 Maths, K113 Physics */
+			.test(t) ||
+		/^\(\d:\d\)/ /* (10:45) A201 Maths (somehow they manage to sometimes add the time *facepalm*) */
+			.test(t) ||
+		/^\w \w+/ /* A Maths, K Technology */
+			.test(t) ||
+		/^\w+ \d/ /* Workshop 1, Workshop 2 */
+			.test(t);
 
-	const lesson: NonUniqueLesson = createLessonWithParticipants({
-		isEmpty,
-		dayIndex,
-		timeIndex,
-		name,
-		participants,
-	});
-
-	return [lesson];
-}
-
-function extractLessonFromClassParser(
-	scheduleItem: CheerioElement, //
-	dayIndex: number,
-	timeIndex: number
-): NonUniqueLesson[] {
-	const itemWithClassNameTeacherAndRoom = scheduleItem.children[0] /** always skip this */.children;
-
-	// console.log("item with stuff", JSON.stringify(itemWithClassNameTeacherAndRoom));
-
-	const name: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "");
-	const room: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[6]?.data ?? "");
-	const teacher: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
-
-	const students: string[] = (removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[2]?.data ?? "") ?? [])
-		.split(" ")
-		.map((stud) => stud.trim())
-		.filter((stud) => !!stud);
-
-	const isEmpty: boolean = checkIsEmpty(name, teacher, room);
-
-	const participants: ParticipantInLesson[] = [
-		...students.map((s): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["student"], text: s })),
-		...teacher
-			.split("\n")
-			.map((t) => t.trim())
-			.filter((t) => !!t)
-			.map((t): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["teacher"], text: t })),
-		...room
-			.split("\n")
-			.map((r) => r.trim())
-			.filter((r) => !!r)
-			.map((r): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["room"], text: r })),
-	];
-
-	/** BEGIN TODO determinism */
 	/**
-	 * there's this thing where a class might contain multiple rooms & teachers
-	 * all bunched up into a single lesson
+	 * match non-latin characters aswell
+	 * with the /\p{L}/u thingie.
 	 *
-	 * (see https://github.com/kiprasmel/turbo-schedule/issues/31#issuecomment-612715871)
-	 *
-	 * and we don't like that,
-	 * so we'll split them into separate ones here, if needed!
+	 * see https://stackoverflow.com/a/48902765/9285308
 	 *
 	 */
+	const isTeacher = (t: string): boolean =>
+		/\p{L}{2,} \p{L}{2,}( \p{L}{2,})?$/u.test(t) && !isClass(t.split(" ").reverse()[0]);
 
-	// const hasMultipleTeachersOrRooms: boolean = teacher.split("\n").length > 1 || room.split("\n").length > 1;
+	const isStudent = (t: string): boolean => {
+		const split = t.split(" ");
+		const last = [...split].reverse()[0];
+		const exceptLast = [...split].slice(0, -1).join(" ");
 
-	// if (!hasMultipleTeachersOrRooms) {
+		if (isTeacher(exceptLast) && isClass(last)) {
+			return true;
+		}
+
+		return false;
+	};
+
+	const isEmpty: boolean = participantEntries.length === 0;
+
+	const name = participantEntries[0];
+	participantEntries.shift();
+
+	const filterAndWrapWithLabels = (
+		filterPred: (t: string) => boolean,
+		labels: ParticipantInLesson["labels"]
+	): ParticipantInLesson[] =>
+		participantEntries
+			.filter(filterPred)
+			.map((t): ParticipantInLesson => ({ isActive: !isEmpty, labels, text: t }));
+
+	const participants: ParticipantInLesson[] = [
+		...filterAndWrapWithLabels(isClass, ["class", "student"]),
+		...filterAndWrapWithLabels(isRoom, ["room"]),
+		...filterAndWrapWithLabels(isTeacher, ["teacher"]),
+		...filterAndWrapWithLabels(isStudent, ["student"]),
+	];
+
 	const lesson: NonUniqueLesson = createLessonWithParticipants({
 		isEmpty,
 		dayIndex,
@@ -175,116 +165,4 @@ function extractLessonFromClassParser(
 	});
 
 	return [lesson];
-	// }
-
-	// /**
-	//  * the lesson has multiple teachers or rooms. Good luck:D
-	//  */
-
-	// const teachers: string[] = teacher
-	// 	.split("\n")
-	// 	.map((t) => t.trim())
-	// 	.filter((t) => !!t);
-
-	// const rooms: string[] = room
-	// 	.split("\n")
-	// 	.map((r) => r.trim())
-	// 	.filter((r) => !!r);
-
-	// /**
-	//  * if this is deterministic & we can tell where which teacher & room belongs too
-	//  *
-	//  * oh wait there'll be more than 1 lesson wiht the same day & time index --
-	//  * which one should we show in the schedule?
-	//  *
-	//  * Determinism out the window, rip...
-	//  */
-	// /** TODO BEGIN good */
-	// // if (teachers.length === rooms.length || teachers.length === 1 || rooms.length === 1) {
-	// // 	const lessons: NonUniqueLesson[] = [];
-
-	// // 	for (let i = 0; i < Math.max(teachers.length, rooms.length); ++i) {
-	// // 		const currentLesson: NonUniqueLesson = new NonUniqueLesson({
-	// // 			isEmpty,
-	// // 			dayIndex,
-	// // 			timeIndex,
-	// // 			name,
-	// // 			teacher: teachers.length === 1 ? teachers[0] : teachers[i],
-	// // 			room: rooms.length === 1 ? rooms[0] : rooms[i],
-	// // 		});
-
-	// // 		lessons.push(currentLesson);
-	// // 	}
-
-	// // 	return lessons;
-	// // }
-	// /** TODO END good */
-
-	// /**
-	//  * otherwise - it's not deterministic
-	//  */
-	// // eslint-disable-next-line no-else-return
-	// /** TODO BEGIN good */
-	// // else {
-	// /** TODO END good */
-	// /** TODO BEGIN good */
-	// // console.error("Teachers & rooms length was different! teachers:", teachers, "rooms:", rooms);
-	// // throw new Error("Teachers & rooms length was different!");
-	// /** TODO END good */
-
-	// const lesson: NonUniqueLesson = new NonUniqueLesson({
-	// 	isEmpty,
-	// 	dayIndex,
-	// 	timeIndex,
-	// 	name,
-	// 	participants,
-	// 	/** BEGIN HACK */
-	// 	// teacher: teachers.join(", ").trim(),
-	// 	// room: rooms.join(", ").trim(),
-	// 	/** END HACK */
-	// 	// students,
-	// });
-
-	// return [lesson];
-
-	// /**     teacher": ".* .*?,.*"    */
-	// /** TODO BEGIN good */
-	// // }
-	// /** TODO END good */
-	/** END TODO determinism */
 }
-
-function extractLessonFromTeacherParser(
-	scheduleItem: CheerioElement, //
-	dayIndex: number,
-	timeIndex: number
-): NonUniqueLesson[] {
-	const itemWithClassNameTeacherAndRoom = scheduleItem.children[0] /** always skip this */.children;
-
-	const isLessonForGrades5to8: boolean =
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "") &&
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[6]?.data ?? "") &&
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
-
-	const isLessonForGrades10to12: boolean =
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "") &&
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[2]?.data ?? "") &&
-		!!removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
-
-	const isEmpty: boolean = !isLessonForGrades5to8 && !isLessonForGrades10to12;
-
-	if (isEmpty) {
-		/** it doesn't matter which one (TODO make sure this is true in 100% of cases) */
-		return extractLessonFromClassParser(scheduleItem, dayIndex, timeIndex);
-	}
-
-	if (isLessonForGrades5to8) {
-		/** lesson for grades 5-10 */
-		return extractLessonFromClassParser(scheduleItem, dayIndex, timeIndex);
-	}
-
-	/** lessons for grades 11-12 */
-	return extractLessonFromStudentParser(scheduleItem, dayIndex, timeIndex);
-}
-
-const removeNewlineAndTrim = (content: string) => content.replace("\n", "").trim();
