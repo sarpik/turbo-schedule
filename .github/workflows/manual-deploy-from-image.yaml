@@ -1,0 +1,42 @@
+#
+# It's hard to re-use code with github's actions atm...
+#
+
+name: manual-deploy-from-image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag of the docker image. Defaults to `latest`"
+        required: true
+        default: 'latest'
+
+env:
+    CI: true
+
+jobs:
+    manual-deploy-from-image:
+        runs-on: ubuntu-latest
+
+        steps:
+            # BEGIN INSTALL
+            - uses: actions/checkout@v2
+
+            - run: |
+                mkdir -p ~/.ssh/
+                touch ~/.ssh/id_rsa
+                printf "%s" "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
+              env:
+                SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
+
+            - run: ./deploy.sh
+              env:
+                  TAG: ${{ github.event.inputs.tag }}
+                  REMOTE: ${{ secrets.SSH_REMOTE }}
+                  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+                  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+            - run: |
+                shred -n 69 ~/.ssh/id_rsa
+                rm -rf ~/.ssh/
