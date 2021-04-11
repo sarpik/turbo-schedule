@@ -12,7 +12,7 @@ const extractStudentName = (scheduleItems: Array<CheerioElement>): string | unde
 		const studentNameAndClass: string | undefined =
 			scheduleItems[0].children[0].children[0].children[0].children[0].data;
 
-		console.log("studentNameAndClass", studentNameAndClass);
+		// console.log("studentNameAndClass", studentNameAndClass);
 
 		return studentNameAndClass;
 	} catch (err) {

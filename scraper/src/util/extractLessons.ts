@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
+import cheerio from "cheerio";
+
 import { getHtml, ParticipantInLesson, NonUniqueLesson, createLessonWithParticipants } from "@turbo-schedule/common";
 
 import { prepareScheduleItems } from "./prepareScheduleItems";
@@ -124,21 +126,107 @@ function extractLessonFromClassParser(
 ): NonUniqueLesson[] {
 	const itemWithClassNameTeacherAndRoom = scheduleItem.children[0] /** always skip this */.children;
 
+	const $ = cheerio(scheduleItem);
+	const text = $.contents()
+		.first()
+		.text();
+
+	const newTexts = text
+		.split("\n")
+		.map(removeNewlineAndTrim)
+		.filter((t) => /* ignore empty */ !!t && /* ignore multiple slashes */ !/^\/+$/.test(t));
+
+	// console.log("text", text);
+	console.log("newTexts", newTexts);
+
 	// console.log("item with stuff", JSON.stringify(itemWithClassNameTeacherAndRoom));
 
-	const name: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "");
-	const room: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[6]?.data ?? "");
-	const teacher: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
+	// console.log(JSON.stringify(itemWithClassNameTeacherAndRoom));
 
-	const students: string[] = (removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[2]?.data ?? "") ?? [])
-		.split(" ")
-		.map((stud) => stud.trim())
-		.filter((stud) => !!stud);
+	const texts = itemWithClassNameTeacherAndRoom
+		.filter((el) => {
+			if (el.type === "tag" && el.name === "br") return false;
+			if (el.type === "text" && !removeNewlineAndTrim(el?.data || "")) return false;
+
+			return true;
+		})
+		.map((el) => {
+			if (el.type === "tag" && el.name === "b") return el.children?.[0]?.data ?? "";
+			if (el.type === "text") return el?.data ?? "";
+
+			return "";
+		})
+		.map((str) => removeNewlineAndTrim(str ?? ""));
+
+	// const texts = [
+	// 	removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? ""),
+	// 	removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? ""),
+	// 	removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[6]?.data ?? ""),
+	// ];
+
+	// console.log("texts", texts, "itemWithClassNameTeacherAndRoom", JSON.stringify(itemWithClassNameTeacherAndRoom));
+
+	const name = texts[0];
+
+	texts.shift();
+
+	let room, teacher, classes: string[];
+
+	if (texts.filter((t) => !!t).length === 1) {
+		room = texts[0];
+		teacher = "";
+		classes = [];
+	} /* else if */ else {
+		const isRoom = (text: string) => /\w{1}\d+/.test(text);
+
+		if (isRoom(texts[2])) {
+			teacher = texts[1];
+			room = texts[2];
+
+			classes = [];
+		} else {
+			classes = (texts[1] ?? "")
+				.split(" ")
+				.map((s) => s.trim())
+				.filter((s) => !!s);
+
+			teacher = texts[2];
+
+			room = "";
+		}
+	}
+
+	/** could be not found - upstream's logic */
+	// const room = texts.find((text) => {
+	// 	if (/^\w{1}\d+/.test(text)) {
+	// 		return true;
+	// 	}
+
+	// 	return false;
+	// });
+
+	// /** actually, classes, but classify them as students */
+	// const students = texts.find((text) => {
+	// 	if (/^\d\w/.test(text) || /^I+V?G?\w/.test(text)) {
+	// 		return true;
+	// 	}
+
+	// 	return false;
+	// });
+
+	// const name: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[0].children?.[0]?.data ?? "");
+	// const room: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[6]?.data ?? "");
+	// const teacher: string = removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[4]?.data ?? "");
+
+	// const students: string[] = (removeNewlineAndTrim(itemWithClassNameTeacherAndRoom[2]?.data ?? "") ?? [])
+	// 	.split(" ")
+	// 	.map((stud) => stud.trim())
+	// 	.filter((stud) => !!stud);
 
 	const isEmpty: boolean = checkIsEmpty(name, teacher, room);
 
 	const participants: ParticipantInLesson[] = [
-		...students.map((s): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["student"], text: s })),
+		...classes.map((c): ParticipantInLesson => ({ isActive: !isEmpty, labels: ["class", "student"], text: c })),
 		...teacher
 			.split("\n")
 			.map((t) => t.trim())
