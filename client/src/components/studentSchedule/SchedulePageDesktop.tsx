@@ -132,9 +132,6 @@ export const SchedulePageDesktop: FC<Props> = ({ match }) => {
 				max-width: 100vw;
 
 				overflow: hidden; /** TODO investigate if actually works */
-
-				/** experimental -- TBD */
-				background-color: hsla(0, 10%, 90%, 1);
 			`}
 		>
 			<Navbar
