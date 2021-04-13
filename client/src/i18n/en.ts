@@ -67,4 +67,5 @@ export const en: Dictionary = {
 	total: "total",
 	"(to) clear": "clear",
 	"See an example": "See an example",
+	"Recently viewed (adj, mult)": "Recently viewed",
 };

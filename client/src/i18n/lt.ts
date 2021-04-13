@@ -80,4 +80,5 @@ export const lt: Dictionary = {
 	total: "iš viso",
 	"(to) clear": "išvalyti",
 	"See an example": "Pamatyti pavyzdį",
+	"Recently viewed (adj, mult)": "Neseniai peržiūrėti",
 };

@@ -6,6 +6,15 @@ import { css } from "emotion";
 import { Student, Teacher, Room, Class, Participant, parseParticipants } from "@turbo-schedule/common";
 
 import { Link } from "react-router-dom";
+// import { usePersistedLRUCache } from "hooks/useLRUCache";
+import {
+	// useMostRecentlyViewedStudents,
+	// useMostRecentlyViewedClasses,
+	// useMostRecentlyViewedTeachers,
+	// useMostRecentlyViewedRooms,
+	useMostRecentlyViewedParticipants,
+} from "hooks/useLRUCache";
+import { Dictionary } from "i18n/i18n";
 import { useTranslation } from "../../i18n/useTranslation";
 import { createLinkToLesson } from "./LessonsList";
 
@@ -33,6 +42,20 @@ export const ParticipantListList: FC<Props> = ({ participants, className, ...res
 	const isOnlyOneMatchingParticipant: boolean =
 		students.length + teachers.length + rooms.length + classes.length === 1;
 
+	// const [mostRecentlyViewedStudents] = useMostRecentlyViewedStudents();
+	// const [mostRecentlyViewedClasses] = useMostRecentlyViewedClasses();
+	// const [mostRecentlyViewedTeachers] = useMostRecentlyViewedTeachers();
+	// const [mostRecentlyViewedRooms] = useMostRecentlyViewedRooms();
+	const [mostRecentlyViewedParticipants] = useMostRecentlyViewedParticipants();
+
+	const renderables: { k: keyof Dictionary; v: string[] }[] = [
+		{ k: "Students", v: students },
+		{ k: "Teachers", v: teachers },
+		{ k: "Rooms", v: rooms },
+		{ k: "Classes", v: classes },
+		{ k: "Recently viewed (adj, mult)", v: [...mostRecentlyViewedParticipants].reverse() },
+	];
+
 	return (
 		<div
 			className={[
@@ -50,26 +73,13 @@ export const ParticipantListList: FC<Props> = ({ participants, className, ...res
 			].join(" ")}
 			{...rest}
 		>
-			<ParticipantList
-				participants={students}
-				summary={t("Students") + ` (${students.length})`}
-				isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
-			/>
-			<ParticipantList
-				participants={teachers}
-				summary={t("Teachers") + ` (${teachers.length})`}
-				isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
-			/>
-			<ParticipantList
-				participants={rooms}
-				summary={t("Rooms") + ` (${rooms.length})`}
-				isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
-			/>
-			<ParticipantList
-				participants={classes}
-				summary={t("Classes") + ` (${classes.length})`}
-				isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
-			/>
+			{renderables.map(({ k: summary, v: theParticipants }) => (
+				<ParticipantList
+					participants={theParticipants}
+					summary={t(summary) + ` (${theParticipants.length})`}
+					isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
+				/>
+			))}
 		</div>
 	);
 };

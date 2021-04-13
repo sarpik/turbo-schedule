@@ -7,6 +7,7 @@ export * from "./util/writeToSingleFile";
 export * from "./util/timeElapsed";
 export * from "./util/mergeBy";
 export * from "./util/random";
+export * from "./util/LRUCache";
 
 export * from "./model/Participant";
 export * from "./model/Schedule";

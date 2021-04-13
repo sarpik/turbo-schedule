@@ -33,16 +33,17 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
 	const setValue = (value: T | ((val: T) => T)) => {
 		try {
 			// Allow value to be a function so we have same API as useState
-
 			const valueToStore = value instanceof Function ? value(storedValue) : value;
 
 			// Save state
 
 			setStoredValue(valueToStore);
+			console.log("valueToStore", valueToStore);
 
 			// Save to local storage
 
 			window.localStorage.setItem(key, JSON.stringify(valueToStore));
+			console.log("after stored to local storage", JSON.parse(localStorage.getItem(key) ?? ""));
 		} catch (error) {
 			// A more advanced implementation would handle the error case
 

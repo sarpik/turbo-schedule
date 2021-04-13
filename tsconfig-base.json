@@ -30,7 +30,8 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
-		"baseUrl": "."
+		"baseUrl": ".",
+		"downlevelIteration": true
 	},
 	"exclude": [
 		"node_modules", //

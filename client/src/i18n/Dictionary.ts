@@ -51,4 +51,5 @@ export interface Dictionary {
 	total: string;
 	"(to) clear": string;
 	"See an example": string;
+	"Recently viewed (adj, mult)": string;
 }
