@@ -7,7 +7,7 @@ import { Student, Teacher, Room, Class, Participant, parseParticipants } from "@
 
 import { Link } from "react-router-dom";
 
-import { useMostRecentlyViewedParticipants } from "../../hooks/useLRUCache";
+import { useMostRecentlyViewedParticipantsSplit } from "../../hooks/useLRUCache";
 import { Dictionary } from "../../i18n/i18n";
 import { useTranslation } from "../../i18n/useTranslation";
 import { createLinkToLesson } from "./LessonsList";
@@ -36,23 +36,68 @@ export const ParticipantListList: FC<Props> = ({ participants, className, ...res
 	const isOnlyOneMatchingParticipant: boolean =
 		students.length + teachers.length + rooms.length + classes.length === 1;
 
-	const [mostRecentlyViewedParticipants] = useMostRecentlyViewedParticipants();
+	const {
+		mostRecentStudents, //
+		mostRecentTeachers,
+		mostRecentRooms,
+		mostRecentClasses,
+	} = useMostRecentlyViewedParticipantsSplit();
 
-	const renderables: { k: keyof Dictionary; v: string[] }[] = [
-		{ k: "Students", v: students },
-		{ k: "Teachers", v: teachers },
-		{ k: "Rooms", v: rooms },
-		{ k: "Classes", v: classes },
+	const renderables: { k: keyof Dictionary; v: string[]; recent: string[] }[] = [
 		{
-			k: "Recently viewed (adj, mult)",
-			v: mostRecentlyViewedParticipants.filter(
-				(recentP) =>
-					(participants as Participant[])?.map?.((p) => p.text).includes(recentP) ??
+			k: "Students",
+			v: students,
+			recent: mostRecentStudents.filter(
+				(x) =>
+					participants?.map?.((p) => p.text).filter((p) => p.includes(x)) ??
 					Object.values(participants as MehParticipants)
 						.flat()
-						.includes(recentP)
+						.includes(x)
 			),
 		},
+		{
+			k: "Teachers",
+			v: teachers,
+			recent: mostRecentTeachers.filter(
+				(x) =>
+					participants?.map?.((p) => p.text).filter((p) => p.includes(x)) ??
+					Object.values(participants as MehParticipants)
+						.flat()
+						.includes(x)
+			),
+		},
+		{
+			k: "Rooms",
+			v: rooms,
+			recent: mostRecentRooms.filter(
+				(x) =>
+					participants?.map?.((p) => p.text).filter((p) => p.includes(x)) ??
+					Object.values(participants as MehParticipants)
+						.flat()
+						.includes(x)
+			),
+		},
+		{
+			k: "Classes",
+			v: classes,
+			recent: mostRecentClasses.filter(
+				(x) =>
+					participants?.map?.((p) => p.text).filter((p) => p.includes(x)) ??
+					Object.values(participants as MehParticipants)
+						.flat()
+						.includes(x)
+			),
+		},
+		// {
+		// 	k: "Recently viewed (adj, mult)",
+		// 	v: mostRecentlyViewedParticipants.filter(
+		// 		(recentP) =>
+		// 			(participants as Participant[])?.map?.((p) => p.text).includes(recentP) ??
+		// 			Object.values(participants as MehParticipants)
+		// 				.flat()
+		// 				.includes(recentP)
+		// 	),
+		// },
 	];
 
 	return (
@@ -72,10 +117,11 @@ export const ParticipantListList: FC<Props> = ({ participants, className, ...res
 			].join(" ")}
 			{...rest}
 		>
-			{renderables.map(({ k: summary, v: theParticipants }) => (
+			{renderables.map(({ k: summary, v: theParticipants, recent }) => (
 				<ParticipantList
 					key={summary}
 					participants={theParticipants}
+					mostRecentParticipants={recent}
 					summary={t(summary) + ` (${theParticipants.length})`}
 					isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
 				/>
@@ -86,10 +132,17 @@ export const ParticipantListList: FC<Props> = ({ participants, className, ...res
 
 const ParticipantList: FC<{
 	participants: string[];
+	mostRecentParticipants?: string[];
 	summary?: string;
 	open?: boolean;
 	isOnlyOneMatchingParticipant?: boolean;
-}> = ({ participants = [], summary = "", open = true, isOnlyOneMatchingParticipant = false }) => (
+}> = ({
+	participants = [], //
+	mostRecentParticipants = [],
+	summary = "",
+	open = true,
+	isOnlyOneMatchingParticipant = false,
+}) => (
 	<details
 		className={css`
 			margin-left: auto;
@@ -113,6 +166,30 @@ const ParticipantList: FC<{
 				<span>{summary}</span>
 			</summary>
 		)}
+
+		<ol
+			type="1"
+			className={css`
+				display: flex;
+				flex-direction: column;
+
+				& > * {
+					list-style-type: decimal-leading-zero;
+				}
+
+				& > * + * {
+					margin-top: 0.25em;
+				}
+			`}
+		>
+			{mostRecentParticipants.map((p) => (
+				<ParticipantListItem
+					key={p} //
+					participant={p}
+					isOnlyOneMatchingParticipant={isOnlyOneMatchingParticipant}
+				/>
+			))}
+		</ol>
 
 		<ol
 			type="1"

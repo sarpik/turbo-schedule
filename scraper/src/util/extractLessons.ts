@@ -1,6 +1,15 @@
 import cheerio from "cheerio";
 
-import { getHtml, ParticipantInLesson, NonUniqueLesson, createLessonWithParticipants } from "@turbo-schedule/common";
+import {
+	getHtml, //
+	ParticipantInLesson,
+	NonUniqueLesson,
+	createLessonWithParticipants,
+	isClass,
+	isRoom,
+	isTeacher,
+	isStudent,
+} from "@turbo-schedule/common";
 
 import { prepareScheduleItems } from "./prepareScheduleItems";
 
@@ -76,44 +85,6 @@ function lessonExtractor(
 		.split("\n")
 		.map(removeNewlineAndTrim)
 		.filter((t) => /* ignore empty */ !!t && /* ignore multiple slashes */ !/^\/+$/.test(t));
-
-	const isClass = (t: string): boolean =>
-		/^\d\w/ /* 5a, 5b, 8a, 8b */
-			.test(t) ||
-		/^I+V?G?\w$/ /* IGa, IGb, Ia, IIGa, IIIGa, IVGa */
-			.test(t);
-
-	const isRoom = (t: string): boolean =>
-		/^\w\d+/ /* A201 Maths, K113 Physics */
-			.test(t) ||
-		/^\(\d:\d\)/ /* (10:45) A201 Maths (somehow they manage to sometimes add the time *facepalm*) */
-			.test(t) ||
-		/^\w \w+/ /* A Maths, K Technology */
-			.test(t) ||
-		/^\w+ \d/ /* Workshop 1, Workshop 2 */
-			.test(t);
-
-	/**
-	 * match non-latin characters aswell
-	 * with the /\p{L}/u thingie.
-	 *
-	 * see https://stackoverflow.com/a/48902765/9285308
-	 *
-	 */
-	const isTeacher = (t: string): boolean =>
-		/\p{L}{2,} \p{L}{2,}( \p{L}{2,})?$/u.test(t) && !isClass(t.split(" ").reverse()[0]);
-
-	const isStudent = (t: string): boolean => {
-		const split = t.split(" ");
-		const last = [...split].reverse()[0];
-		const exceptLast = [...split].slice(0, -1).join(" ");
-
-		if (isTeacher(exceptLast) && isClass(last)) {
-			return true;
-		}
-
-		return false;
-	};
 
 	const isEmpty: boolean = participantEntries.length === 0;
 

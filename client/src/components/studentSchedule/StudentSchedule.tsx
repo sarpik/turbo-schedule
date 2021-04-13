@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { throttle } from "lodash";
 
-import { Lesson, Student } from "@turbo-schedule/common";
+import { Lesson, Student, ParticipantLabel, participantClassifier } from "@turbo-schedule/common";
 
 import "./StudentSchedule.scss";
 
-import { useMostRecentlyViewedParticipants } from "../../hooks/useLRUCache";
+import { useMostRecentlyViewedParticipantsSplit } from "../../hooks/useLRUCache";
 import Footer from "../footer/Footer";
 import { Navbar } from "../navbar/Navbar";
 import { history } from "../../utils/history";
@@ -59,10 +59,11 @@ const StudentSchedule = ({ match }: IStudentScheduleProps) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [scheduleByDays, setScheduleByDays] = useState([[]] as Array<Array<Lesson>>);
 
-	const [, addMostRecent] = useMostRecentlyViewedParticipants();
+	const { addMostRecent } = useMostRecentlyViewedParticipantsSplit();
 
 	useEffect(() => {
-		addMostRecent(studentName);
+		const participantKind: ParticipantLabel = participantClassifier(studentName);
+		addMostRecent(participantKind, studentName);
 	}, [addMostRecent, studentName]);
 
 	useEffect(() => {

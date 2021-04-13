@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect } from "react";
 
-import { Participant, LRUCache } from "@turbo-schedule/common";
+import { Participant, LRUCache, Student, Teacher, Class, Room, ParticipantLabel } from "@turbo-schedule/common";
 
 import { useLocalStorage } from "./useLocalStorage";
 
@@ -62,19 +62,50 @@ export const useMostRecentlyViewedParticipants = createUsePersistedLRUCache<Part
 	maxCacheSize * 4
 );
 
-// export const useMostRecentlyViewedStudents = createUsePersistedLRUCache<Student["text"]>(
-// 	"turbo-schedule.most-recent-students",
-// 	maxCacheSize
-// );
-// export const useMostRecentlyViewedTeachers = createUsePersistedLRUCache<Teacher["text"]>(
-// 	"turbo-schedule.most-recent-teachers",
-// 	maxCacheSize
-// );
-// export const useMostRecentlyViewedClasses = createUsePersistedLRUCache<Class["text"]>(
-// 	"turbo-schedule.most-recent-classes",
-// 	maxCacheSize
-// );
-// export const useMostRecentlyViewedRooms = createUsePersistedLRUCache<Room["text"]>(
-// 	"turbo-schedule.most-recent-rooms",
-// 	maxCacheSize
-// );
+export const useMostRecentlyViewedParticipantsSplit = () => {
+	const [mostRecentStudents, addStudent] = useMostRecentlyViewedStudents();
+	const [mostRecentTeachers, addTeacher] = useMostRecentlyViewedTeachers();
+	const [mostRecentClasses, addClass] = useMostRecentlyViewedClasses();
+	const [mostRecentRooms, addRoom] = useMostRecentlyViewedRooms();
+
+	const addMostRecent = useCallback(
+		(kind: ParticipantLabel, value: Participant["text"]) => {
+			const adderMap: { [Key in NonNullable<typeof kind>]: (value: string) => void } = {
+				student: addStudent, //
+				teacher: addTeacher,
+				class: addClass,
+				room: addRoom,
+			};
+
+			const adder = adderMap[kind];
+
+			adder(value);
+		},
+		[addClass, addRoom, addTeacher, addStudent]
+	);
+
+	return {
+		mostRecentStudents,
+		mostRecentTeachers,
+		mostRecentClasses,
+		mostRecentRooms,
+		addMostRecent,
+	};
+};
+
+export const useMostRecentlyViewedStudents = createUsePersistedLRUCache<Student["text"]>(
+	"turbo-schedule.most-recent-students",
+	maxCacheSize
+);
+export const useMostRecentlyViewedTeachers = createUsePersistedLRUCache<Teacher["text"]>(
+	"turbo-schedule.most-recent-teachers",
+	maxCacheSize
+);
+export const useMostRecentlyViewedClasses = createUsePersistedLRUCache<Class["text"]>(
+	"turbo-schedule.most-recent-classes",
+	maxCacheSize
+);
+export const useMostRecentlyViewedRooms = createUsePersistedLRUCache<Room["text"]>(
+	"turbo-schedule.most-recent-rooms",
+	maxCacheSize
+);

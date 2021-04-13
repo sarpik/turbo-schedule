@@ -8,6 +8,7 @@ export * from "./util/timeElapsed";
 export * from "./util/mergeBy";
 export * from "./util/random";
 export * from "./util/LRUCache";
+export * from "./util/scraperSpecificParticipantClassifier"; /** TODO FIXME */
 
 export * from "./model/Participant";
 export * from "./model/Schedule";
