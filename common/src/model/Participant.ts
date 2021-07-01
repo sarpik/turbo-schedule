@@ -29,6 +29,8 @@ export interface Participant {
 	lessons?: Lesson[];
 }
 
+export type WantedParticipant = Pick<Participant, "text" | "labels">;
+
 export const getDefaultParticipantLean = (): ParticipantInLesson => ({
 	text: "",
 	isActive: false,

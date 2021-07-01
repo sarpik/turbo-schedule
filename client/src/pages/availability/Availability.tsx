@@ -4,7 +4,7 @@ import React, { FC, useState, useEffect, useRef, useReducer, useCallback, useMem
 import axios from "axios";
 import { cx, css } from "emotion";
 
-import { Availability as IAvailability, Participant } from "@turbo-schedule/common";
+import { Availability as IAvailability, Participant, WantedParticipant } from "@turbo-schedule/common";
 
 import { ParticipantListItem } from "../../components/studentSchedule/ParticipantList";
 import { Dictionary } from "../../i18n/i18n";
@@ -13,7 +13,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useQueryFor, EncoderDecoder } from "../../hooks/useQueryFor";
 import { Navbar } from "../../components/navbar/Navbar";
 import { useTranslation } from "../../i18n/useTranslation";
-import { ParticipantPicker, WantedParticipant } from "./ParticipantPicker";
+import { ParticipantPicker } from "./ParticipantPicker";
 
 const mapRatioToHSLThroughHue = (ratio: number, hueStart: number = 240, hueEnd: number = 360): string => {
 	const hue: number = hueStart + (hueEnd - hueStart) * ratio;

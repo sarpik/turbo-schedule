@@ -123,7 +123,8 @@ export const useAddMostRecentParticipantOnPageChange = (participantName: string)
 	const { addMostRecent } = useMostRecentlyViewedParticipantsSplit();
 
 	useEffect(() => {
-		const participantKind: ParticipantLabel = participantClassifier(participantName);
-		addMostRecent(participantKind, participantName);
+		participantClassifier(participantName).then((participantKind: ParticipantLabel) => {
+			addMostRecent(participantKind, participantName);
+		});
 	}, [addMostRecent, participantName]);
 };

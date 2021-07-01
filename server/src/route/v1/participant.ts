@@ -14,6 +14,7 @@ import {
 	participantHasLesson,
 	findParticipantsWithMultipleLessonsInSameTime,
 	MinimalLesson,
+	WantedParticipant,
 } from "@turbo-schedule/common";
 
 import { isProd } from "../../util/isProd";
@@ -210,6 +211,45 @@ router.get("/common-availability", async (req, res, next) => {
 		});
 
 		return !isProd() ? next(err) : res.end();
+	}
+});
+
+router.get("/classify", async (req, res, next) => {
+	interface Data {
+		participants: WantedParticipant[];
+		err?: unknown;
+	}
+
+	const send = (code: number, data: Data = { participants: [], err: null }) => {
+		res.status(code).json(data);
+		if (data.err) console.error(data.err);
+		return !isProd() ? (data.err ? next(data.err) : next()) : res.end();
+	};
+
+	try {
+		const participants: string[] =
+			req.query?.["participants"]
+				?.split(",")
+				?.map((p: string) => p?.trim())
+				.filter((p: string) => !!p) ?? [];
+
+		if (!participants.length) {
+			return send(400, { participants: [], err: `No participants included in request.query (${participants})` });
+		}
+
+		const db: Db = await initDb();
+
+		const classifiedParticipants: Data["participants"] = await db
+			.get("participants")
+			.filter((p) => participants.includes(p.text))
+			.map((p) => ({ text: p.text, labels: p.labels }))
+			.value();
+
+		console.log("classified", classifiedParticipants);
+
+		return send(200, { participants: classifiedParticipants });
+	} catch (err) {
+		return send(500, { participants: [], err: err });
 	}
 });
 

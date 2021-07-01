@@ -1,4 +1,4 @@
-import { ParticipantLabel } from "../model/Participant";
+import { ParticipantLabel, WantedParticipant } from "../model/Participant";
 
 export const isClass = (t: string): boolean =>
 	/^\d\w/ /* 5a, 5b, 8a, 8b */
@@ -53,7 +53,10 @@ export const isStudent = (t: string): boolean => {
  *
  * TODO FIXME HACK
  */
-export function participantClassifier(text: string): ParticipantLabel {
+export async function participantClassifier(
+	text: string,
+	useServiceIfError: boolean = true
+): Promise<ParticipantLabel> {
 	const classifiers: [(t: string) => boolean, ParticipantLabel][] = [
 		[isClass, "class"],
 		[isRoom, "room"],
@@ -65,13 +68,23 @@ export function participantClassifier(text: string): ParticipantLabel {
 		.filter(([isMatch]) => isMatch(text))
 		.map(([_, labels]) => labels);
 
-	if (matchedLabels.length === 0) {
-		throw new Error(`Participant classification failed (0) - no matcher matched. Participant text: \`${text}\``);
-	} else if (matchedLabels.length === 1) {
+	if (matchedLabels.length === 1) {
 		return matchedLabels[0];
+	} else if (useServiceIfError) {
+		return fetch(`/api/v1/participant/classify?participants=${text}`)
+			.then((res) => res.json())
+			.then((res) => {
+				console.log(res);
+				return res;
+			})
+			.then((res: { participants: WantedParticipant[] }) => res.participants[0].labels[0]);
+	} else if (matchedLabels.length === 0) {
+		throw new Error(`Participant classification failed (0) - no matcher matched. Participant text: \`${text}\``);
 	} else {
 		throw new Error(
-			`Participant classification failed (2+) - more than one matched. Participant text: \`${text}\``
+			`Participant classification failed (2+) - more than one matched. Participant text: \`${text}\`, matched labels: ${matchedLabels.join(
+				", "
+			)}`
 		);
 	}
 }

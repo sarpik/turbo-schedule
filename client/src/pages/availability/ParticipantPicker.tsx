@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { css, cx } from "emotion";
 
-import { parseParticipants, Participant } from "@turbo-schedule/common";
+import { parseParticipants, WantedParticipant } from "@turbo-schedule/common";
 
 import { Checkbox } from "../../common/Checkbox";
 import { Indent } from "../../common/Indent";
@@ -19,8 +19,6 @@ import { TSetQuery, useQueryFor, arrayEncoderDecoder } from "../../hooks/useQuer
 import { useFetchParticipants } from "../../hooks/fetch/useFetchParticipants";
 import { Dictionary } from "../../i18n/i18n";
 import { useTranslation } from "../../i18n/useTranslation";
-
-export type WantedParticipant = Pick<Participant, "text" | "labels">;
 
 interface ParticipantPickerProps
 	extends Omit<
