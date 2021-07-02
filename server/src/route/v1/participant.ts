@@ -15,35 +15,35 @@ import {
 	findParticipantsWithMultipleLessonsInSameTime,
 	MinimalLesson,
 	WantedParticipant,
+	getDefaultParticipant,
 } from "@turbo-schedule/common";
 
-import { isProd } from "../../util/isProd";
+import { WithErr, withSender } from "../../middleware/withSender";
 
 const router: Router = Router();
 
 /**
  * get an array of schedule items (WITHOUT lessons)
  */
-router.get("/", async (_req, res, next) => {
+export interface ParticipantsRes extends WithErr {
+	participants: Participant[];
+}
+
+router.get<any, ParticipantsRes>("/", withSender({ participants: [] }), async (_req, res) => {
+	const send = res.sender;
+
 	try {
 		const db: Db = await initDb();
 
 		const participants: Participant[] = await db.get("participants").value();
 
 		if (!participants?.length) {
-			const msg: string = `Schedule items not found (were \`${participants}\`)`;
-
-			console.error(msg);
-			return res.status(404).json({ participants: [], message: msg });
+			return send(404, { participants: [], err: `Schedule items not found (were \`${participants}\`)` });
 		}
 
-		res.json({ participants });
-
-		return !isProd() ? next() : res.end();
+		return send(200, { participants });
 	} catch (err) {
-		console.error(err);
-		res.status(500).json({ participants: [], message: err });
-		return !isProd() ? next(err) : res.end();
+		return send(500, { participants: [], err });
 	}
 });
 
@@ -52,179 +52,184 @@ router.get("/", async (_req, res, next) => {
  * - `count` (optional): exact count of how many participants to return
  * - `max`   (optional): maximum number of participants to return IF an exact count is not specified
  */
-router.get("/random", async (req, res, next) => {
-	const db: Db = await initDb();
-	const participants: Participant[] = await db.get("participants").value();
+export interface ParticipantRandomRes extends WithErr {
+	participants: Participant[];
+}
 
-	if (!req.query["count"]) {
-		const maxCount: number = Number(req.query["max"]) || 32;
-
-		res.json({ participants: pickSome(participants, { maxCount }) });
-		return !isProd() ? next() : res.end();
-	} else {
-		const n = Number(req.query["count"]);
-
-		if (Number.isNaN(n)) {
-			const msg: string = `req.query.count NaN (provided as \`${req.query["count"]}\`, parsed as ${n})`;
-
-			res.status(400).json({
-				participants: [],
-				message: msg,
-			});
-
-			return !isProd() ? next(msg) : res.end();
-		} else {
-			res.json({ participants: pickNPseudoRandomly(n)(participants) });
-			return !isProd() ? next() : res.end();
-		}
-	}
-});
-
-router.get("/common-availability", async (req, res, next) => {
-	const getDefaultReturn = () => ({
-		minDayIndex: -1, //
-		maxDayIndex: -1,
-		minTimeIndex: -1,
-		maxTimeIndex: -1,
-		availability: [],
-	});
+router.get<any, ParticipantRandomRes>("/random", withSender({ participants: [] }), async (req, res) => {
+	const send = res.sender;
 
 	try {
 		const db: Db = await initDb();
+		const participants: Participant[] = await db.get("participants").value();
 
-		const wantedParticipants: Participant["text"][] =
-			req.query?.["wanted-participants"]
-				?.split(",")
-				?.map((p: string | any) => p?.trim())
-				.filter((p: string | any) => !!p) ?? [];
+		if (!req.query["count"]) {
+			const maxCount: number = Number(req.query["max"]) || 32;
+			return send(200, { participants: pickSome(participants, { maxCount }) });
+		} else {
+			const n = Number(req.query["count"]);
 
-		const totalWantedParticipants: number = wantedParticipants.length;
-
-		console.log(wantedParticipants, totalWantedParticipants);
-
-		if (!wantedParticipants.length) {
-			const msg: string = `Request query \`wanted-participants\` was empty (${wantedParticipants})`;
-
-			console.error(msg);
-
-			res.status(400).json({ ...getDefaultReturn(), msg });
-			return !isProd() ? next(msg) : res.end();
-		}
-
-		const lessons: Lesson[] = await db
-			.get("lessons")
-			.filter(
-				(l) =>
-					wantedParticipants.some((w) => l.students.includes(w)) ||
-					wantedParticipants.some((w) => l.classes.includes(w)) ||
-					wantedParticipants.some((w) => l.teachers.includes(w)) ||
-					wantedParticipants.some((w) => l.rooms.includes(w))
-			)
-			.value();
-
-		const minDayIndex = lessons.reduce((prevMin, curr) => Math.min(prevMin, curr.dayIndex), 1e9);
-		const maxDayIndex = lessons.reduce((prevMax, curr) => Math.max(prevMax, curr.dayIndex), 0);
-
-		const minTimeIndex = lessons.reduce((prevMin, curr) => Math.min(prevMin, curr.timeIndex), 1e9);
-		const maxTimeIndex = lessons.reduce((prevMax, curr) => Math.max(prevMax, curr.timeIndex), 0);
-
-		const availability: Availability[][] = [];
-
-		/**
-		 * O(fast enough)
-		 */
-		for (let i = minDayIndex; i <= maxDayIndex; i++) {
-			availability[i] = [];
-
-			for (let j = minTimeIndex; j <= maxTimeIndex; j++) {
-				const related: Lesson[] = lessons.filter((l) => l.dayIndex === i && l.timeIndex === j);
-
-				type Ret = {
-					participant: Participant["text"];
-					lesson: MinimalLesson;
-				};
-				/**
-				 * there could be multiple participants in the same lesson,
-				 * thus account for them all, not once.
-				 */
-				const getParticipants = (filterPred: (l: Lesson) => boolean): Ret[] => [
-					...new Set(
-						related.filter(filterPred).flatMap((l) =>
-							[l.students, l.teachers, l.classes, l.rooms].flatMap((participants) =>
-								participants
-									.filter((participant) => wantedParticipants.includes(participant))
-									.map(
-										(participant): Ret => ({
-											participant,
-											lesson: {
-												id: l.id,
-												name: l.name,
-											},
-										})
-									)
-							)
-						)
-					),
-				];
-
-				let availableParticipants = getParticipants((l) => l.isEmpty);
-				const bussyParticipants = getParticipants((l) => !l.isEmpty);
-
-				/**
-				 * TODO FIXME HACK:
-				 *
-				 * The scraper is messed up for some edge cases (upstream -_-),
-				 * and there might be duplicate lessons, some not properly scraped.
-				 *
-				 * We know for a fact, though, that if a participant is bussy,
-				 * it cannot be available -- this fixes the issue (temporarily),
-				 * before we fix the underlying issue.
-				 *
-				 */
-				availableParticipants = availableParticipants.filter(
-					(p) => !bussyParticipants.some((bussyP) => p.participant === bussyP.participant)
-				);
-
-				availability[i][j] = {
-					dayIndex: i, //
-					timeIndex: j,
-					availableParticipants,
-					bussyParticipants,
-				};
+			if (Number.isNaN(n)) {
+				return send(400, {
+					participants: [],
+					err: `req.query.count NaN (provided as \`${req.query["count"]}\`, parsed as ${n})`,
+				});
+			} else {
+				return send(200, { participants: pickNPseudoRandomly(n)(participants) });
 			}
 		}
-
-		res.status(200).json({
-			minDayIndex, //
-			maxDayIndex,
-			minTimeIndex,
-			maxTimeIndex,
-			availability,
-		});
-
-		return !isProd() ? next() : res.end();
 	} catch (err) {
-		console.error(err);
-		res.status(500).json({
-			...getDefaultReturn(),
-			msg: err,
-		});
-
-		return !isProd() ? next(err) : res.end();
+		return send(500, { participants: [], err });
 	}
 });
 
-router.get("/classify", async (req, res, next) => {
-	interface Data {
-		participants: WantedParticipant[];
-		err?: unknown;
-	}
+export interface ParticipantCommonAvailabilityRes extends WithErr {
+	minDayIndex: number;
+	maxDayIndex: number;
+	minTimeIndex: number;
+	maxTimeIndex: number;
+	availability: Availability[][];
+}
 
-	const send = (code: number, data: Data = { participants: [], err: null }) => {
-		res.status(code).json(data);
-		if (data.err) console.error(data.err);
-		return !isProd() ? (data.err ? next(data.err) : next()) : res.end();
-	};
+const getDefaultParticipantCommonAvailRes = (): ParticipantCommonAvailabilityRes => ({
+	minDayIndex: -1, //
+	maxDayIndex: -1,
+	minTimeIndex: -1,
+	maxTimeIndex: -1,
+	availability: [],
+});
+
+router.get<any, ParticipantCommonAvailabilityRes>(
+	"/common-availability",
+	withSender(getDefaultParticipantCommonAvailRes()),
+	async (req, res) => {
+		const send = res.sender;
+
+		try {
+			const db: Db = await initDb();
+
+			const wantedParticipants: Participant["text"][] =
+				req.query?.["wanted-participants"]
+					?.split(",")
+					?.map((p: string | any) => p?.trim())
+					.filter((p: string | any) => !!p) ?? [];
+
+			const totalWantedParticipants: number = wantedParticipants.length;
+
+			console.log(wantedParticipants, totalWantedParticipants);
+
+			if (!wantedParticipants.length) {
+				return send(400, {
+					...getDefaultParticipantCommonAvailRes(),
+					err: `Request query \`wanted-participants\` was empty (${wantedParticipants})`,
+				});
+			}
+
+			const lessons: Lesson[] = await db
+				.get("lessons")
+				.filter(
+					(l) =>
+						wantedParticipants.some((w) => l.students.includes(w)) ||
+						wantedParticipants.some((w) => l.classes.includes(w)) ||
+						wantedParticipants.some((w) => l.teachers.includes(w)) ||
+						wantedParticipants.some((w) => l.rooms.includes(w))
+				)
+				.value();
+
+			const minDayIndex = lessons.reduce((prevMin, curr) => Math.min(prevMin, curr.dayIndex), 1e9);
+			const maxDayIndex = lessons.reduce((prevMax, curr) => Math.max(prevMax, curr.dayIndex), 0);
+
+			const minTimeIndex = lessons.reduce((prevMin, curr) => Math.min(prevMin, curr.timeIndex), 1e9);
+			const maxTimeIndex = lessons.reduce((prevMax, curr) => Math.max(prevMax, curr.timeIndex), 0);
+
+			const availability: Availability[][] = [];
+
+			/**
+			 * O(fast enough)
+			 */
+			for (let i = minDayIndex; i <= maxDayIndex; i++) {
+				availability[i] = [];
+
+				for (let j = minTimeIndex; j <= maxTimeIndex; j++) {
+					const related: Lesson[] = lessons.filter((l) => l.dayIndex === i && l.timeIndex === j);
+
+					type Ret = {
+						participant: Participant["text"];
+						lesson: MinimalLesson;
+					};
+					/**
+					 * there could be multiple participants in the same lesson,
+					 * thus account for them all, not once.
+					 */
+					const getParticipants = (filterPred: (l: Lesson) => boolean): Ret[] => [
+						...new Set(
+							related.filter(filterPred).flatMap((l) =>
+								[l.students, l.teachers, l.classes, l.rooms].flatMap((participants) =>
+									participants
+										.filter((participant) => wantedParticipants.includes(participant))
+										.map(
+											(participant): Ret => ({
+												participant,
+												lesson: {
+													id: l.id,
+													name: l.name,
+												},
+											})
+										)
+								)
+							)
+						),
+					];
+
+					let availableParticipants = getParticipants((l) => l.isEmpty);
+					const bussyParticipants = getParticipants((l) => !l.isEmpty);
+
+					/**
+					 * TODO FIXME HACK:
+					 *
+					 * The scraper is messed up for some edge cases (upstream -_-),
+					 * and there might be duplicate lessons, some not properly scraped.
+					 *
+					 * We know for a fact, though, that if a participant is bussy,
+					 * it cannot be available -- this fixes the issue (temporarily),
+					 * before we fix the underlying issue.
+					 *
+					 */
+					availableParticipants = availableParticipants.filter(
+						(p) => !bussyParticipants.some((bussyP) => p.participant === bussyP.participant)
+					);
+
+					availability[i][j] = {
+						dayIndex: i, //
+						timeIndex: j,
+						availableParticipants,
+						bussyParticipants,
+					};
+				}
+			}
+
+			return send(200, {
+				minDayIndex, //
+				maxDayIndex,
+				minTimeIndex,
+				maxTimeIndex,
+				availability,
+			});
+		} catch (err) {
+			return send(500, {
+				...getDefaultParticipantCommonAvailRes(),
+				err,
+			});
+		}
+	}
+);
+
+export interface ParticipantClassifyRes extends WithErr {
+	participants: WantedParticipant[];
+}
+
+router.get<any, ParticipantClassifyRes>("/classify", withSender({ participants: [] }), async (req, res) => {
+	const send = res.sender;
 
 	try {
 		const participants: string[] =
@@ -234,12 +239,15 @@ router.get("/classify", async (req, res, next) => {
 				.filter((p: string) => !!p) ?? [];
 
 		if (!participants.length) {
-			return send(400, { participants: [], err: `No participants included in request.query (${participants})` });
+			return send(400, {
+				participants: [],
+				err: `No participants included in request.query (${participants})`,
+			});
 		}
 
 		const db: Db = await initDb();
 
-		const classifiedParticipants: Data["participants"] = await db
+		const classifiedParticipants: ParticipantClassifyRes["participants"] = await db
 			.get("participants")
 			.filter((p) => participants.includes(p.text))
 			.map((p) => ({ text: p.text, labels: p.labels }))
@@ -247,11 +255,15 @@ router.get("/classify", async (req, res, next) => {
 
 		return send(200, { participants: classifiedParticipants });
 	} catch (err) {
-		return send(500, { participants: [], err: err });
+		return send(500, { participants: [], err });
 	}
 });
 
-router.get("/debug/duplicates", async (_req, res, next) => {
+export interface ParticipantDuplicatesRes extends WithErr {
+	duplicates: Record<string, Record<string, Lesson[]>>;
+}
+
+router.get<any, ParticipantDuplicatesRes>("/debug/duplicates", withSender({ duplicates: {} }), async (_req, res) => {
 	try {
 		const db: Db = await initDb();
 
@@ -260,62 +272,61 @@ router.get("/debug/duplicates", async (_req, res, next) => {
 
 		const duplicates = findParticipantsWithMultipleLessonsInSameTime(participants, lessons);
 
-		console.log("duplicates", duplicates);
-
-		res.json({ duplicates });
-		return !isProd() ? next() : res.end();
+		return res.sender(200, { duplicates });
 	} catch (e) {
-		throw e;
+		return res.sender(500, { duplicates: {}, err: e });
 	}
 });
 
 /**
  * get full schedule of single participant by it's name
  */
-router.get("/:participantName", async (req, res, next) => {
-	try {
-		const db: Db = await initDb();
+export interface ParticipantScheduleByNameRes extends WithErr {
+	participant: Participant;
+}
 
-		const participantName: string = decodeURIComponent(req.params.participantName);
+router.get<any, ParticipantScheduleByNameRes>(
+	"/:participantName",
+	withSender({ participant: getDefaultParticipant() }),
+	async (req, res) => {
+		const send = res.sender;
 
-		console.log("name", participantName);
+		try {
+			const db: Db = await initDb();
 
-		const participant: Participant = await db
-			.get("participants")
-			.find((p) => p.text.toLowerCase() === participantName.toLowerCase())
-			.value();
+			const participantName: string = decodeURIComponent(req.params.participantName);
 
-		if (!participant) {
-			const msg: string = `Participant not found (was \`${participant}\`)`;
+			console.log("name", participantName);
 
-			console.error(msg);
-			return res.status(404).json({ participant: {}, message: msg });
+			const participant: Participant = await db
+				.get("participants")
+				.find((p) => p.text.toLowerCase() === participantName.toLowerCase())
+				.value();
+
+			if (!participant) {
+				return send(404, {
+					participant: getDefaultParticipant(),
+					err: `Participant not found (was \`${participant}\`)`,
+				});
+			}
+
+			const lessons: Lesson[] = await db
+				.get("lessons")
+				.filter(participantHasLesson(participant))
+				.value();
+
+			if (!lessons?.length) {
+				return send(404, { participant, err: `Lessons for participant not found (were \`${lessons}\`)` });
+			}
+
+			const participantWithLessons: Participant = { ...participant, lessons };
+
+			return send(200, { participant: participantWithLessons });
+		} catch (err) {
+			return send(500, { participant: getDefaultParticipant(), err });
 		}
-
-		const lessons: Lesson[] = await db
-			.get("lessons")
-			.filter(participantHasLesson(participant))
-			.value();
-
-		if (!lessons?.length) {
-			const msg: string = `Lessons for participant not found (were \`${lessons}\`)`;
-
-			console.error(msg);
-			return res.status(404).json({ participant, message: msg });
-		}
-
-		const participantWithLessons: Participant = { ...participant, lessons };
-
-		res.json({ participant: participantWithLessons });
-
-		return !isProd() ? next() : res.end();
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ participant: {}, message: err });
-
-		return !isProd() ? next(err) : res.end();
 	}
-});
+);
 
 /** --- */
 
