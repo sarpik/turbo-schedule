@@ -1,0 +1,13 @@
+diff --git a/node_modules/@types/express/index.d.ts b/node_modules/@types/express/index.d.ts
+index e60c0dc..b97ac1a 100644
+--- a/node_modules/@types/express/index.d.ts
++++ b/node_modules/@types/express/index.d.ts
+@@ -99,7 +99,7 @@ declare namespace e {
+     interface Request<P extends core.Params = core.ParamsDictionary> extends core.Request<P> { }
+     interface RequestHandler<P extends core.Params = core.ParamsDictionary> extends core.RequestHandler<P> { }
+     interface RequestParamHandler extends core.RequestParamHandler { }
+-    export interface Response extends core.Response { }
++    export interface Response<T = any> extends core.Response<T> { }
+     interface Router extends core.Router { }
+     interface Send extends core.Send { }
+ }

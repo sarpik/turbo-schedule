@@ -1,0 +1,25 @@
+diff --git a/node_modules/@types/express-serve-static-core/index.d.ts b/node_modules/@types/express-serve-static-core/index.d.ts
+index dc77fbc..e8b2708 100644
+--- a/node_modules/@types/express-serve-static-core/index.d.ts
++++ b/node_modules/@types/express-serve-static-core/index.d.ts
+@@ -492,6 +492,8 @@ export interface MediaType {
+ 
+ export type Send<ResBody = any, T = Response<ResBody>> = (body?: ResBody) => T;
+ 
++export type Sender<ResBody = any, T = Response<ResBody>> = (code: number, body?: ResBody) => void;
++
+ export interface Response<ResBody = any> extends http.ServerResponse, Express.Response {
+     /**
+      * Set status `code`.
+@@ -535,6 +537,11 @@ export interface Response<ResBody = any> extends http.ServerResponse, Express.Re
+      */
+     send: Send<ResBody, this>;
+ 
++	/**
++	 * custom
++	 */
++	sender: Sender<ResBody, this>;
++
+     /**
+      * Send JSON response.
+      *
