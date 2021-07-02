@@ -25,3 +25,12 @@ router.use("/docs.json", openAPIDocsJSONHandler);
 router.use("/", redirectToApiDocs);
 
 export { router as apiRouterV1 };
+
+export * from "./participant";
+/**
+ * TODO: type-safe routes with exported response types:
+ */
+// export * from "./class";
+// export * from "./student";
+// export * from "./teacher";
+// export * from "./room";

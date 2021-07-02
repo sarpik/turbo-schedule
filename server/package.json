@@ -3,7 +3,7 @@
 	"version": "2.23.1",
 	"description": "",
 	"main": "dist/src/server.js",
-	"typings": "dist/src/server.d.ts",
+	"typings": "dist/src/index.d.ts",
 	"author": "Kipras Melnikovas <dev@kipras.org> (https://kipras.org)",
 	"license": "",
 	"scripts": {
