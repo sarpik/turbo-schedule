@@ -15,9 +15,11 @@ import {
 	findParticipantsWithMultipleLessonsInSameTime,
 	MinimalLesson,
 	WantedParticipant,
+	getDefaultParticipant,
 } from "@turbo-schedule/common";
 
 import { isProd } from "../../util/isProd";
+import { WithErr, withSender } from "../../middleware/withSender";
 
 const router: Router = Router();
 
@@ -214,17 +216,12 @@ router.get("/common-availability", async (req, res, next) => {
 	}
 });
 
-router.get("/classify", async (req, res, next) => {
-	interface Data {
-		participants: WantedParticipant[];
-		err?: unknown;
-	}
+export interface ParticipantClassifyRes extends WithErr {
+	participants: WantedParticipant[];
+}
 
-	const send = (code: number, data: Data = { participants: [], err: null }) => {
-		res.status(code).json(data);
-		if (data.err) console.error(data.err);
-		return !isProd() ? (data.err ? next(data.err) : next()) : res.end();
-	};
+router.get<any, ParticipantClassifyRes>("/classify", withSender({ participants: [] }), async (req, res) => {
+	const send = res.sender;
 
 	try {
 		const participants: string[] =
@@ -234,12 +231,15 @@ router.get("/classify", async (req, res, next) => {
 				.filter((p: string) => !!p) ?? [];
 
 		if (!participants.length) {
-			return send(400, { participants: [], err: `No participants included in request.query (${participants})` });
+			return send(400, {
+				participants: [],
+				err: `No participants included in request.query (${participants})`,
+			});
 		}
 
 		const db: Db = await initDb();
 
-		const classifiedParticipants: Data["participants"] = await db
+		const classifiedParticipants: ParticipantClassifyRes["participants"] = await db
 			.get("participants")
 			.filter((p) => participants.includes(p.text))
 			.map((p) => ({ text: p.text, labels: p.labels }))
@@ -247,11 +247,15 @@ router.get("/classify", async (req, res, next) => {
 
 		return send(200, { participants: classifiedParticipants });
 	} catch (err) {
-		return send(500, { participants: [], err: err });
+		return send(500, { participants: [], err });
 	}
 });
 
-router.get("/debug/duplicates", async (_req, res, next) => {
+export interface ParticipantDuplicatesRes extends WithErr {
+	duplicates: Record<string, Record<string, Lesson[]>>;
+}
+
+router.get<any, ParticipantDuplicatesRes>("/debug/duplicates", withSender({ duplicates: {} }), async (_req, res) => {
 	try {
 		const db: Db = await initDb();
 
@@ -260,62 +264,61 @@ router.get("/debug/duplicates", async (_req, res, next) => {
 
 		const duplicates = findParticipantsWithMultipleLessonsInSameTime(participants, lessons);
 
-		console.log("duplicates", duplicates);
-
-		res.json({ duplicates });
-		return !isProd() ? next() : res.end();
+		return res.sender(200, { duplicates });
 	} catch (e) {
-		throw e;
+		return res.sender(500, { duplicates: {}, err: e });
 	}
 });
 
 /**
  * get full schedule of single participant by it's name
  */
-router.get("/:participantName", async (req, res, next) => {
-	try {
-		const db: Db = await initDb();
+export interface ParticipantScheduleByNameRes extends WithErr {
+	participant: Participant;
+}
 
-		const participantName: string = decodeURIComponent(req.params.participantName);
+router.get<any, ParticipantScheduleByNameRes>(
+	"/:participantName",
+	withSender({ participant: getDefaultParticipant() }),
+	async (req, res) => {
+		const send = res.sender;
 
-		console.log("name", participantName);
+		try {
+			const db: Db = await initDb();
 
-		const participant: Participant = await db
-			.get("participants")
-			.find((p) => p.text.toLowerCase() === participantName.toLowerCase())
-			.value();
+			const participantName: string = decodeURIComponent(req.params.participantName);
 
-		if (!participant) {
-			const msg: string = `Participant not found (was \`${participant}\`)`;
+			console.log("name", participantName);
 
-			console.error(msg);
-			return res.status(404).json({ participant: {}, message: msg });
+			const participant: Participant = await db
+				.get("participants")
+				.find((p) => p.text.toLowerCase() === participantName.toLowerCase())
+				.value();
+
+			if (!participant) {
+				return send(404, {
+					participant: getDefaultParticipant(),
+					err: `Participant not found (was \`${participant}\`)`,
+				});
+			}
+
+			const lessons: Lesson[] = await db
+				.get("lessons")
+				.filter(participantHasLesson(participant))
+				.value();
+
+			if (!lessons?.length) {
+				return send(404, { participant, err: `Lessons for participant not found (were \`${lessons}\`)` });
+			}
+
+			const participantWithLessons: Participant = { ...participant, lessons };
+
+			return send(200, { participant: participantWithLessons });
+		} catch (err) {
+			return send(500, { participant: getDefaultParticipant(), err });
 		}
-
-		const lessons: Lesson[] = await db
-			.get("lessons")
-			.filter(participantHasLesson(participant))
-			.value();
-
-		if (!lessons?.length) {
-			const msg: string = `Lessons for participant not found (were \`${lessons}\`)`;
-
-			console.error(msg);
-			return res.status(404).json({ participant, message: msg });
-		}
-
-		const participantWithLessons: Participant = { ...participant, lessons };
-
-		res.json({ participant: participantWithLessons });
-
-		return !isProd() ? next() : res.end();
-	} catch (err) {
-		console.error(err);
-		res.status(500).json({ participant: {}, message: err });
-
-		return !isProd() ? next(err) : res.end();
 	}
-});
+);
 
 /** --- */
 
