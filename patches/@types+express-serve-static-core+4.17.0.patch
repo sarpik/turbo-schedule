@@ -1,17 +1,21 @@
 diff --git a/node_modules/@types/express-serve-static-core/index.d.ts b/node_modules/@types/express-serve-static-core/index.d.ts
-index dc77fbc..70ab7a4 100644
+index dc77fbc..2b85d6c 100644
 --- a/node_modules/@types/express-serve-static-core/index.d.ts
 +++ b/node_modules/@types/express-serve-static-core/index.d.ts
-@@ -492,6 +492,8 @@ export interface MediaType {
+@@ -492,6 +492,12 @@ export interface MediaType {
  
  export type Send<ResBody = any, T = Response<ResBody>> = (body?: ResBody) => T;
  
-+export type Sender<ResBody = any> = (code: number, body?: ResBody) => void;
++// export type Sender<ResBody = any> = (code: number, body?: ResBody) => void;
++export interface Sender<ResBody = any> {
++	(code: number, data: ResBody, shouldMergeDefaultData: false): void;
++	(code: number, data: Partial<ResBody>, shouldMergeDefaultData?: true | undefined): void;
++}
 +
  export interface Response<ResBody = any> extends http.ServerResponse, Express.Response {
      /**
       * Set status `code`.
-@@ -535,6 +537,11 @@ export interface Response<ResBody = any> extends http.ServerResponse, Express.Re
+@@ -535,6 +541,11 @@ export interface Response<ResBody = any> extends http.ServerResponse, Express.Re
       */
      send: Send<ResBody, this>;
  
