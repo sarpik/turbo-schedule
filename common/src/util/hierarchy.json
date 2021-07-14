@@ -1,0 +1,29 @@
+{
+  "time": "2021-07-14T09:53:21.160Z",
+  "hierarchy": {
+    "groupName": "Everyone",
+    "children": [
+      {
+        "debug": "ERR children and newItemGroups lengths do not match 4, 1"
+      }
+    ],
+    "currentItems": [
+      {
+        "id": "5a",
+        "text": "5a",
+        "originalHref": "x30015a344.htm",
+        "labels": [
+          "class",
+          "student"
+        ],
+        "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30015a344.htm",
+        "fullClassOrig": "5a",
+        "classNumOrig": "5",
+        "classCharOrig": "a",
+        "fullClass": "5a",
+        "classNum": 5,
+        "classChar": "a"
+      }
+    ]
+  }
+}
