@@ -1,0 +1,509 @@
+{
+  "time": "2021-07-14T10:04:15.270Z",
+  "hierarchy": {
+    "groupName": "Everyone",
+    "children": [
+      {
+        "debug": "classes",
+        "groupName": "Classes",
+        "children": [
+          {
+            "debug": "classes 5-10",
+            "groupName": "5",
+            "currentItems": [
+              {
+                "id": "5a",
+                "text": "5a",
+                "originalHref": "x30015a344.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30015a344.htm",
+                "fullClassOrig": "5a",
+                "classNumOrig": "5",
+                "classCharOrig": "a",
+                "fullClass": "5a",
+                "classNum": 5,
+                "classChar": "a"
+              }
+            ]
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "6",
+            "currentItems": [
+              {
+                "id": "6a",
+                "text": "6a",
+                "originalHref": "x30016a345.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30016a345.htm",
+                "fullClassOrig": "6a",
+                "classNumOrig": "6",
+                "classCharOrig": "a",
+                "fullClass": "6a",
+                "classNum": 6,
+                "classChar": "a"
+              }
+            ]
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "7",
+            "currentItems": [
+              {
+                "id": "7a",
+                "text": "7a",
+                "originalHref": "x30017a346.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30017a346.htm",
+                "fullClassOrig": "7a",
+                "classNumOrig": "7",
+                "classCharOrig": "a",
+                "fullClass": "7a",
+                "classNum": 7,
+                "classChar": "a"
+              }
+            ]
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "8",
+            "currentItems": [
+              {
+                "id": "8a",
+                "text": "8a",
+                "originalHref": "x30018a347.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30018a347.htm",
+                "fullClassOrig": "8a",
+                "classNumOrig": "8",
+                "classCharOrig": "a",
+                "fullClass": "8a",
+                "classNum": 8,
+                "classChar": "a"
+              }
+            ]
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "9",
+            "currentItems": [
+              {
+                "id": "IGa",
+                "text": "IGa",
+                "originalHref": "x3001g1a703.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x3001g1a703.htm",
+                "fullClassOrig": "IGa",
+                "classNumOrig": "IG",
+                "classCharOrig": "a",
+                "fullClass": "9a",
+                "classNum": 9,
+                "classChar": "a"
+              }
+            ]
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "10",
+            "currentItems": [
+              {
+                "id": "IIGa",
+                "text": "IIGa",
+                "originalHref": "x3001g2a706.htm",
+                "labels": [
+                  "class",
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x3001g2a706.htm",
+                "fullClassOrig": "IIGa",
+                "classNumOrig": "IIG",
+                "classCharOrig": "a",
+                "fullClass": "10a",
+                "classNum": 10,
+                "classChar": "a"
+              }
+            ]
+          }
+        ],
+        "currentItems": [
+          {
+            "id": "5a",
+            "text": "5a",
+            "originalHref": "x30015a344.htm",
+            "labels": [
+              "class",
+              "student"
+            ],
+            "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30015a344.htm",
+            "fullClassOrig": "5a",
+            "classNumOrig": "5",
+            "classCharOrig": "a",
+            "fullClass": "5a",
+            "classNum": 5,
+            "classChar": "a"
+          }
+        ]
+      },
+      {
+        "debug": "students",
+        "groupName": "Students",
+        "children": [
+          {
+            "debug": "students 11-12",
+            "groupName": "11",
+            "children": [
+              {
+                "debug": "students a-e",
+                "groupName": "a",
+                "currentItems": [
+                  {
+                    "id": "Alonderytė Austėja IIIGa",
+                    "text": "Alonderytė Austėja IIIGa",
+                    "originalHref": "x300111a_alond_aus264.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111a_alond_aus264.htm",
+                    "firstName": "Austėja",
+                    "lastName": "Alonderytė",
+                    "fullName": "Austėja Alonderytė",
+                    "classNum": 11,
+                    "classChar": "a",
+                    "fullClass": "11a",
+                    "classNumOrig": "IIIG",
+                    "classCharOrig": "a",
+                    "fullClassOrig": "IIIGa"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "b",
+                "currentItems": [
+                  {
+                    "id": "Anužytė Aistė  IIIGb",
+                    "text": "Anužytė Aistė  IIIGb",
+                    "originalHref": "x300111b_anuzy_ais630.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111b_anuzy_ais630.htm",
+                    "firstName": "Aistė",
+                    "lastName": "Anužytė",
+                    "fullName": "Aistė Anužytė",
+                    "classNum": 11,
+                    "classChar": "b",
+                    "fullClass": "11b",
+                    "classNumOrig": "IIIG",
+                    "classCharOrig": "b",
+                    "fullClassOrig": "IIIGb"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "c",
+                "currentItems": [
+                  {
+                    "id": "Adomaitis Jurgis IIIc",
+                    "text": "Adomaitis Jurgis IIIc",
+                    "originalHref": "x300111c_adoma_jur284.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111c_adoma_jur284.htm",
+                    "firstName": "Jurgis",
+                    "lastName": "Adomaitis",
+                    "fullName": "Jurgis Adomaitis",
+                    "classNum": 11,
+                    "classChar": "c",
+                    "fullClass": "11c",
+                    "classNumOrig": "III",
+                    "classCharOrig": "c",
+                    "fullClassOrig": "IIIc"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "d",
+                "currentItems": [
+                  {
+                    "id": "Baužys Evaldas IIId",
+                    "text": "Baužys Evaldas IIId",
+                    "originalHref": "x300111d_bauzy_eva439.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111d_bauzy_eva439.htm",
+                    "firstName": "Evaldas",
+                    "lastName": "Baužys",
+                    "fullName": "Evaldas Baužys",
+                    "classNum": 11,
+                    "classChar": "d",
+                    "fullClass": "11d",
+                    "classNumOrig": "III",
+                    "classCharOrig": "d",
+                    "fullClassOrig": "IIId"
+                  }
+                ]
+              }
+            ],
+            "currentItems": [
+              {
+                "id": "Alonderytė Austėja IIIGa",
+                "text": "Alonderytė Austėja IIIGa",
+                "originalHref": "x300111a_alond_aus264.htm",
+                "labels": [
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111a_alond_aus264.htm",
+                "firstName": "Austėja",
+                "lastName": "Alonderytė",
+                "fullName": "Austėja Alonderytė",
+                "classNum": 11,
+                "classChar": "a",
+                "fullClass": "11a",
+                "classNumOrig": "IIIG",
+                "classCharOrig": "a",
+                "fullClassOrig": "IIIGa"
+              }
+            ]
+          },
+          {
+            "debug": "students 11-12",
+            "groupName": "12",
+            "children": [
+              {
+                "debug": "students a-e",
+                "groupName": "a",
+                "currentItems": [
+                  {
+                    "id": "Baltmiškis Petras IVGa",
+                    "text": "Baltmiškis Petras IVGa",
+                    "originalHref": "x300112a_baltm__pet1597.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112a_baltm__pet1597.htm",
+                    "firstName": "Petras",
+                    "lastName": "Baltmiškis",
+                    "fullName": "Petras Baltmiškis",
+                    "classNum": 12,
+                    "classChar": "a",
+                    "fullClass": "12a",
+                    "classNumOrig": "IVG",
+                    "classCharOrig": "a",
+                    "fullClassOrig": "IVGa"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "b",
+                "currentItems": [
+                  {
+                    "id": "Andrusinaitė Agnė IVGb",
+                    "text": "Andrusinaitė Agnė IVGb",
+                    "originalHref": "x300112b_andru_agn53.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112b_andru_agn53.htm",
+                    "firstName": "Agnė",
+                    "lastName": "Andrusinaitė",
+                    "fullName": "Agnė Andrusinaitė",
+                    "classNum": 12,
+                    "classChar": "b",
+                    "fullClass": "12b",
+                    "classNumOrig": "IVG",
+                    "classCharOrig": "b",
+                    "fullClassOrig": "IVGb"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "c",
+                "currentItems": [
+                  {
+                    "id": "Alminas Matas IVGc",
+                    "text": "Alminas Matas IVGc",
+                    "originalHref": "x300112c_almin_mat163.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112c_almin_mat163.htm",
+                    "firstName": "Matas",
+                    "lastName": "Alminas",
+                    "fullName": "Matas Alminas",
+                    "classNum": 12,
+                    "classChar": "c",
+                    "fullClass": "12c",
+                    "classNumOrig": "IVG",
+                    "classCharOrig": "c",
+                    "fullClassOrig": "IVGc"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "d",
+                "currentItems": [
+                  {
+                    "id": "Andriuškevičius Ignas IVd",
+                    "text": "Andriuškevičius Ignas IVd",
+                    "originalHref": "x300112d_andri_ign27.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112d_andri_ign27.htm",
+                    "firstName": "Ignas",
+                    "lastName": "Andriuškevičius",
+                    "fullName": "Ignas Andriuškevičius",
+                    "classNum": 12,
+                    "classChar": "d",
+                    "fullClass": "12d",
+                    "classNumOrig": "IV",
+                    "classCharOrig": "d",
+                    "fullClassOrig": "IVd"
+                  }
+                ]
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "e",
+                "currentItems": [
+                  {
+                    "id": "Andriuškevičius Rokas IVe",
+                    "text": "Andriuškevičius Rokas IVe",
+                    "originalHref": "x300112e_andri_rok330.htm",
+                    "labels": [
+                      "student"
+                    ],
+                    "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112e_andri_rok330.htm",
+                    "firstName": "Rokas",
+                    "lastName": "Andriuškevičius",
+                    "fullName": "Rokas Andriuškevičius",
+                    "classNum": 12,
+                    "classChar": "e",
+                    "fullClass": "12e",
+                    "classNumOrig": "IV",
+                    "classCharOrig": "e",
+                    "fullClassOrig": "IVe"
+                  }
+                ]
+              }
+            ],
+            "currentItems": [
+              {
+                "id": "Baltmiškis Petras IVGa",
+                "text": "Baltmiškis Petras IVGa",
+                "originalHref": "x300112a_baltm__pet1597.htm",
+                "labels": [
+                  "student"
+                ],
+                "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300112a_baltm__pet1597.htm",
+                "firstName": "Petras",
+                "lastName": "Baltmiškis",
+                "fullName": "Petras Baltmiškis",
+                "classNum": 12,
+                "classChar": "a",
+                "fullClass": "12a",
+                "classNumOrig": "IVG",
+                "classCharOrig": "a",
+                "fullClassOrig": "IVGa"
+              }
+            ]
+          }
+        ],
+        "currentItems": [
+          {
+            "id": "Alonderytė Austėja IIIGa",
+            "text": "Alonderytė Austėja IIIGa",
+            "originalHref": "x300111a_alond_aus264.htm",
+            "labels": [
+              "student"
+            ],
+            "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x300111a_alond_aus264.htm",
+            "firstName": "Austėja",
+            "lastName": "Alonderytė",
+            "fullName": "Austėja Alonderytė",
+            "classNum": 11,
+            "classChar": "a",
+            "fullClass": "11a",
+            "classNumOrig": "IIIG",
+            "classCharOrig": "a",
+            "fullClassOrig": "IIIGa"
+          }
+        ]
+      },
+      {
+        "debug": "teachers",
+        "groupName": "Teachers",
+        "currentItems": [
+          {
+            "id": "Adomaitis Vilius",
+            "text": "Adomaitis Vilius",
+            "originalHref": "x3001adom_vi4849.htm",
+            "labels": [
+              "teacher"
+            ],
+            "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x3001adom_vi4849.htm",
+            "firstName": "Vilius",
+            "lastName": "Adomaitis",
+            "fullName": "Adomaitis Vilius"
+          }
+        ]
+      },
+      {
+        "debug": "rooms",
+        "groupName": "Rooms",
+        "currentItems": [
+          {
+            "id": "A keramikos",
+            "text": "A keramikos",
+            "originalHref": "x3001a_ker2429.htm",
+            "labels": [
+              "room"
+            ],
+            "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x3001a_ker2429.htm"
+          }
+        ]
+      }
+    ],
+    "currentItems": [
+      {
+        "id": "5a",
+        "text": "5a",
+        "originalHref": "x30015a344.htm",
+        "labels": [
+          "class",
+          "student"
+        ],
+        "originalScheduleURI": "http://kpg.lt/Tvarkarastis/x30015a344.htm",
+        "fullClassOrig": "5a",
+        "classNumOrig": "5",
+        "classCharOrig": "a",
+        "fullClass": "5a",
+        "classNum": 5,
+        "classChar": "a"
+      }
+    ]
+  }
+}
