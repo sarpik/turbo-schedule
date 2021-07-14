@@ -1,0 +1,122 @@
+{
+  "time": "2021-07-14T10:29:47.725Z",
+  "hierarchy": {
+    "groupName": "Everyone",
+    "children": [
+      {
+        "debug": "classes",
+        "groupName": "Classes",
+        "children": [
+          {
+            "debug": "classes 5-10",
+            "groupName": "5",
+            "currentItems": []
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "6",
+            "currentItems": []
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "7",
+            "currentItems": []
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "8",
+            "currentItems": []
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "9",
+            "currentItems": []
+          },
+          {
+            "debug": "classes 5-10",
+            "groupName": "10",
+            "currentItems": []
+          }
+        ],
+        "currentItems": []
+      },
+      {
+        "debug": "students",
+        "groupName": "Students",
+        "children": [
+          {
+            "debug": "students 11-12",
+            "groupName": "11",
+            "children": [
+              {
+                "debug": "students a-e",
+                "groupName": "a",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "b",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "c",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "d",
+                "currentItems": []
+              }
+            ],
+            "currentItems": []
+          },
+          {
+            "debug": "students 11-12",
+            "groupName": "12",
+            "children": [
+              {
+                "debug": "students a-e",
+                "groupName": "a",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "b",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "c",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "d",
+                "currentItems": []
+              },
+              {
+                "debug": "students a-e",
+                "groupName": "e",
+                "currentItems": []
+              }
+            ],
+            "currentItems": []
+          }
+        ],
+        "currentItems": []
+      },
+      {
+        "debug": "teachers",
+        "groupName": "Teachers",
+        "currentItems": []
+      },
+      {
+        "debug": "rooms",
+        "groupName": "Rooms",
+        "currentItems": []
+      }
+    ],
+    "currentItems": []
+  }
+}
