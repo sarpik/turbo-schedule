@@ -10,10 +10,11 @@ import { ParticipantListItem } from "../../components/studentSchedule/Participan
 import { Dictionary } from "../../i18n/i18n";
 import { useWindow } from "../../hooks/useWindow";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useQueryFor, EncoderDecoder } from "../../hooks/useQueryFor";
+import { useQueryFor, EncoderDecoder, arrayEncoderDecoder } from "../../hooks/useQueryFor";
 import { Navbar } from "../../components/navbar/Navbar";
 import { useTranslation } from "../../i18n/useTranslation";
 import { ParticipantPicker } from "./ParticipantPicker";
+import { useFetchParticipants } from "hooks/fetch/useFetchParticipants";
 
 const mapRatioToHSLThroughHue = (ratio: number, hueStart: number = 240, hueEnd: number = 360): string => {
 	const hue: number = hueStart + (hueEnd - hueStart) * ratio;
@@ -136,7 +137,24 @@ export const Availability: FC = () => {
 
 	const { desktop, notDesktop } = useWindow();
 
-	const [wantedParticipants, __setWantedParticipants] = useState<WantedParticipant[]>([]);
+
+	const [participants] = useFetchParticipants();
+
+	const [wantedParticipants, __setWantedParticipants] = useQueryFor<WantedParticipant[]>("p", {
+		encode: (wps) => arrayEncoderDecoder.encode(wps.map(wp => wp.text)),
+		decode: (participantsString) => {
+			const participantStrings: string[] = arrayEncoderDecoder.decode(participantsString);
+			const participantsTbd: (Participant | undefined)[] = participantStrings.map(participantStr => participants.find(participant => participant.text === participantStr))
+
+			if (participantsTbd.includes(undefined)) {
+				throw new Error("fetched participants did not include a wanted participant from the URL query")
+			}
+
+			const wps: WantedParticipant[] = (participantsTbd as Participant[]).map((wp) => ({text: wp.text, labels: wp.labels}));
+
+			return wps;
+		}
+	})
 
 	const [hasUpsyncedWantedParticipants, setHasUpsyncedWantedParticipants] = useState(false);
 
@@ -676,6 +694,7 @@ export const Availability: FC = () => {
 						`}
 					>
 						<ParticipantPicker
+							participants={participants}
 							hasSelectedExtraInfo={hasSelectedExtraInfo} //
 							// handleChange={handleWantedParticipantChange}
 							wantedParticipants={wantedParticipants}

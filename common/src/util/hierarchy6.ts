@@ -1,16 +1,22 @@
-#!/usr/bin/env ts-node-dev
+// #!/usr/bin/env ts-node-dev
 
-import fs from "fs";
+// TODO FIXME HACK
+// @ts-nocheck
 
-import { Participant, Class, Student, Teacher, Room } from "@turbo-schedule/common";
+// import fs from "fs";
+// import path from path;
+
+import { Participant, Class, Student, Teacher, Room } from "../";
+
+// const participants: Participant[] = JSON.parse(fs.readFileSync(path.join(__dirname, "res2.json"), { encoding: "utf-8" })).participants;
+// console.log("participants.length", participants.length);
 
 // import { Dictionary } from "../../../client/src/i18n/i18n";
 type Dictionary = Record<string, string>; // TODO FIXME
 
-const { participants } = JSON.parse(fs.readFileSync("res2.json", { encoding: "utf-8" }));
-// const participants = require("./res2.json");
-// const participants: Participant[] = []; // TODO FIXME
-console.log("participants.length", participants.length);
+
+// // const participants = require("./res2.json");
+// // const participants: Participant[] = []; // TODO FIXME
 
 // type NeverIfEmpty<T> = {} extends any ? ([] extends T ? never : T) : never;
 
@@ -86,7 +92,7 @@ type Diff<
 			debug?: any;
 			getGroupName(firstGroupEntry: P): keyof Dictionary | string;
 			isDifferent(p: P, q: Q): boolean;
-			/// / children?: C;
+			children?: C; // TODO: disabled ??
 			useSingleChildDifferForAllGroups: boolean /**
 			 * TODO (optional, default to false, make sure to verify that either
 				* a) the number of groups created is === children.length,
@@ -121,6 +127,7 @@ export type ParticipantDiffHierarchy = Diff<
 	]
 >;
 
+// DO NOT make optional
 export type Hierarchy<T, C extends Hierarchy<T>[] = []> = [] extends C
 	? {
 		debug?: any;
@@ -133,6 +140,15 @@ export type Hierarchy<T, C extends Hierarchy<T>[] = []> = [] extends C
 			currentItems: T[];
 			children: C;
 	  };
+
+// BAD IDEA!
+// export type Hierarchy<T, C extends Hierarchy<T>[] = []> =
+// 	 {
+// 		debug?: any;
+// 			groupName: string;
+// 			currentItems: T[];
+// 			children?: C;
+// 	  }
 
 // export type ParseHierarchyFromDiff<D extends Diff<any, any, any[]>> = D extends Diff<infer P, infer _Q, infer C>
 // 	? C extends []
@@ -205,33 +221,32 @@ export type ParseHierarchyFromDiff<
 			:  never
 		: never;
 
-type UhOh = ParseHierarchyFromDiff<[ParticipantDiffHierarchy]>[0];
+// export type ParticipantHierarchyManual = Hierarchy<
+// 	Participant,
+// 	[
+// 		// Hierarchy<Class, [Hierarchy<Class>]>, //
+// 		Hierarchy<Class>, //
+// 		// Hierarchy<Student, [Hierarchy<Student, [Hierarchy<Student>]>]>,
+// 		Hierarchy<Student, [Hierarchy<Student>]>,
+// 		// Hierarchy<Teacher>,
+// 		Hierarchy<Teacher>,
+// 		// Hierarchy<Room>
+// 		Hierarchy<Room>
+// 	]
+// >;
 
-export type ParticipantHierarchy = Hierarchy<
-	Participant,
-	[
-		// Hierarchy<Class, [Hierarchy<Class>]>, //
-		Hierarchy<Class>, //
-		// Hierarchy<Student, [Hierarchy<Student, [Hierarchy<Student>]>]>,
-		Hierarchy<Student, [Hierarchy<Student>]>,
-		// Hierarchy<Teacher>,
-		Hierarchy<Teacher>,
-		// Hierarchy<Room>
-		Hierarchy<Room>
-	]
->;
+// type Success1 = ParticipantHierarchy extends ParticipantHierarchyManual ? true : false;
+// type Success2 = ParticipantHierarchyManual extends ParticipantHierarchy ? true : false;
 
-type Success1 = UhOh extends ParticipantHierarchy ? true : false;
-type Success2 = ParticipantHierarchy extends UhOh ? true : false;
+// type Success = Success1 extends true ? Success2 extends true ? true : false : false;
 
-type Success = Success1 extends true ? Success2 extends true ? true : false : false;
+// const Succ: Success = true;
+// const Fail: Success = false;
 
-const Succ: Success = true;
-const Fail: Success = false;
+// console.log(Succ, Fail);
 
-console.log(Succ, Fail);
-
-const diffs: ParticipantDiffHierarchy = {
+// diffs
+export const participantDifferenciators: ParticipantDiffHierarchy = {
 		getGroupName: (): keyof Dictionary => "Everyone",
 
 	isDifferent: (p, q) => p.labels[0] !== q.labels[0],
@@ -310,7 +325,7 @@ const diffs: ParticipantDiffHierarchy = {
 	],
 };
 
-console.log("diffs", diffs);
+// console.log("diffs", diffs);
 
 /**
  * TODO: binary search to find indices & use `.slice`
@@ -328,9 +343,14 @@ console.log("diffs", diffs);
 // 	currentItems: T[]
 // ): ParseHierarchyFromDiff<[D]> => {
 
-export const createHierarchy = <T, C extends any[], D extends Diff<T, T, C>>(
-	differentiators: D,
+export const createHierarchy = <
+	T,
+	C extends Diff<any, any, any[]>[], // = Diff<any, any, any[]>[],
+	D extends Diff<T, T, C> // = Diff<T, T, C>
+>(
+	differentiators: D) => (
 	currentItems: T[]
+	// currentItems: ParseHierarchyFromDiff<[D]>[0]["currentItems"] // TODO
 ): ParseHierarchyFromDiff<[D]> => {
 	if (!currentItems?.length) {
 		// TODO FIXME
@@ -395,9 +415,9 @@ export const createHierarchy = <T, C extends any[], D extends Diff<T, T, C>>(
 			...(!differentiators.useSingleChildDifferForAllGroups ?
 				children.length !== newItemGroups.length ?
 					[{debug: `ERR children and newItemGroups lengths do not match (${children.length}, ${newItemGroups.length})`}]
-					: (children.map((child, idx) => createHierarchy(child, newItemGroups[idx]))) // `newItemGroups` <-> identical to `[currentItems]`
+					: (children.map((child, idx) => createHierarchy(child)(newItemGroups[idx]))) // `newItemGroups` <-> identical to `[currentItems]`
 				: children.length !== 1 ? ([{debug: (`ERR children length must be 1 (${children.length})`)}])
-					: (newItemGroups.map((group) => createHierarchy(children[0], group)))) // `children.length` === `1`
+					: (newItemGroups.map((group) => createHierarchy(children[0])(group)))) // `children.length` === `1`
 
 			// children.map((childDiff, childIdx) => createHierarchy(childDiff, !differentiators.useSingleChildDifferForAllGroups ? newItemGroups[childIdx] : null))
 		],
@@ -405,9 +425,13 @@ export const createHierarchy = <T, C extends any[], D extends Diff<T, T, C>>(
 	};
 };
 
-const hierarchy: UhOh[] = createHierarchy(diffs, participants);
 
-fs.writeFileSync("./hierarchy.json", JSON.stringify({time: new Date(), hierarchy}, null, 2), {encoding: "utf-8"});
+export type ParticipantHierarchy = ParseHierarchyFromDiff<[ParticipantDiffHierarchy]>[0];
+export const createParticipantHierarchy = createHierarchy<Participant>(participantDifferenciators); // TODO FIXME - should return `ParticipantHierarchy[]` type
+// export const createParticipantHierarchy = createHierarchy(participantDifferenciators); // TODO
+
+// const hierarchy: ParticipantHierarchy[] = createHierarchy(participantDifferenciators)(participants);
+// fs.writeFileSync("./hierarchy.json", JSON.stringify({time: new Date(), hierarchy}, null, 2), {encoding: "utf-8"});
 
 // console.log("hierarchy!!!", hierarchy);
 

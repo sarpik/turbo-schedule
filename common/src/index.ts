@@ -9,6 +9,7 @@ export * from "./util/mergeBy";
 export * from "./util/random";
 export * from "./util/LRUCache";
 export * from "./util/scraperSpecificParticipantClassifier"; /** TODO FIXME */
+export * from "./util/hierarchy6"; /** TODO FIXME */
 
 export * from "./model/Participant";
 export * from "./model/Schedule";
