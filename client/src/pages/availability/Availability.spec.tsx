@@ -105,7 +105,7 @@ describe("Availability on-load logic", () => {
 	it("should **not** clear the selected day and time (and thus - extra info selection) if >0 participants were selected", async (done) => {
 		const history = createBrowserHistory();
 
-		history.push(`/avail?classes=5a,5b,6d&day=0&time=1`);
+		history.push(`/avail?p=5a,5b,6d&day=0&time=1`);
 
 		renderWrap(<Availability />, { history });
 
@@ -149,6 +149,11 @@ describe("Availability on-load logic", () => {
 		history.push(`/avail?day=0&time=1`);
 
 		renderWrap(<Availability />, { history });
+
+		/**
+		 * initial passes n stuff
+		 */
+		await delay(1000);
 
 		await waitFor(() => {
 			const params: URLSearchParams = new URLSearchParams(history.location.search);

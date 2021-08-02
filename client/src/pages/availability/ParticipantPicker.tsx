@@ -1,23 +1,28 @@
+/* eslint-disable indent */
+
 import React, {
-	FC,
+	FC, //
 	useCallback,
-	useState,
-	useEffect,
-	useMemo,
 	PropsWithChildren,
 	ReactElement,
 	startTransition,
+	useMemo,
 } from "react";
 import { css, cx } from "emotion";
 
-import { parseParticipants, WantedParticipant } from "@turbo-schedule/common";
+import {
+	createParticipantHierarchy, //
+	Hierarchy,
+	Participant,
+	ParticipantHierarchyManual,
+	WantedParticipant,
+} from "@turbo-schedule/common";
 
+import { SetStateArgs } from "../../utils/types";
 import { Checkbox } from "../../common/Checkbox";
 import { Indent } from "../../common/Indent";
 import { useWindow } from "../../hooks/useWindow";
-import { TSetQuery, useQueryFor, arrayEncoderDecoder } from "../../hooks/useQueryFor";
-import { useFetchParticipants } from "../../hooks/fetch/useFetchParticipants";
-import { Dictionary } from "../../i18n/i18n";
+import { Dictionary, en } from "../../i18n/i18n";
 import { useTranslation } from "../../i18n/useTranslation";
 
 interface ParticipantPickerProps
@@ -28,354 +33,224 @@ interface ParticipantPickerProps
 		| "wantedParticipants"
 		| "setWantedParticipants"
 	> {
+	participants: Participant[];
 	wantedParticipants: WantedParticipant[];
-	setWantedParticipants: (newWantedParticipants: WantedParticipant[]) => void;
+	setWantedParticipants: SetStateArgs<WantedParticipant[]>;
 }
 
 export const ParticipantPicker: FC<ParticipantPickerProps> = ({
+	participants,
 	wantedParticipants,
 	setWantedParticipants: _setWantedParticipants,
 }) => {
 	const t = useTranslation();
 
-	const [participants] = useFetchParticipants();
-
-	const {
-		students, //
-		teachers,
-		classes,
-		rooms,
-	} = useMemo(
-		() => parseParticipants(participants), //
+	const hierarchy: ParticipantHierarchyManual = useMemo(
+		() => createParticipantHierarchy(participants), //
 		[participants]
 	);
-
-	/**
-	 * WARNING - BAD CODE AHEAD
-	 * TODO FIXME
-	 */
-
-	const [wantedStudents, setWantedStudents] = useQueryFor<string[]>(
-		"students",
-		useMemo(
-			() => ({
-				...arrayEncoderDecoder,
-				valueOverrideOnceChanges: arrayEncoderDecoder.encode(
-					wantedParticipants.filter((p) => p.labels[0] === "student").map((p) => p.text)
-				),
-			}),
-			[wantedParticipants]
-		)
-	);
-	const [wantedTeachers, setWantedTeachers] = useQueryFor<string[]>(
-		"teachers",
-		useMemo(
-			() => ({
-				...arrayEncoderDecoder,
-				valueOverrideOnceChanges: arrayEncoderDecoder.encode(
-					wantedParticipants.filter((p) => p.labels[0] === "teacher").map((p) => p.text)
-				),
-			}),
-			[wantedParticipants]
-		)
-	);
-	const [wantedClasses, setWantedClasses] = useQueryFor<string[]>(
-		"classes",
-		useMemo(
-			() => ({
-				...arrayEncoderDecoder,
-				valueOverrideOnceChanges: arrayEncoderDecoder.encode(
-					wantedParticipants.filter((p) => p.labels[0] === "class").map((p) => p.text)
-				),
-			}),
-			[wantedParticipants]
-		)
-	);
-	const [wantedRooms, setWantedRooms] = useQueryFor<string[]>(
-		"rooms",
-		useMemo(
-			() => ({
-				...arrayEncoderDecoder,
-				valueOverrideOnceChanges: arrayEncoderDecoder.encode(
-					wantedParticipants.filter((p) => p.labels[0] === "room").map((p) => p.text)
-				),
-			}),
-			[wantedParticipants]
-		)
-	);
-
-	const renderables = [
-		[students, wantedStudents, setWantedStudents, "Students"],
-		[teachers, wantedTeachers, setWantedTeachers, "Teachers"],
-		[classes, wantedClasses, setWantedClasses, "Classes"],
-		[rooms, wantedRooms, setWantedRooms, "Rooms"],
-	] as const;
-
-	// useEffect(() => {
-	// 	setWantedStudents(wantedParticipants.filter((p) => p.labels[0] === "student").map((p) => p.text));
-	// 	setWantedTeachers(wantedParticipants.filter((p) => p.labels[0] === "teacher").map((p) => p.text));
-	// 	setWantedClasses(wantedParticipants.filter((p) => p.labels[0] === "class").map((p) => p.text));
-	// 	setWantedRooms(wantedParticipants.filter((p) => p.labels[0] === "room").map((p) => p.text));
-	// }, [wantedParticipants, setWantedStudents, setWantedTeachers, setWantedClasses, setWantedRooms]);
-
-	useEffect(() => {
-		// const wantedParticipants: string[] = [...wantedStudents, ...wantedTeachers, ...wantedClasses, ...wantedRooms];
-		// handleChange(wantedParticipants);
-		const newWantedParticipants: WantedParticipant[] = [
-			...wantedStudents.map((p): WantedParticipant => ({ text: p, labels: ["student"] })),
-			...wantedTeachers.map((p): WantedParticipant => ({ text: p, labels: ["teacher"] })),
-			...wantedClasses.map((p): WantedParticipant => ({ text: p, labels: ["class", "student"] })),
-			...wantedRooms.map((p): WantedParticipant => ({ text: p, labels: ["room"] })),
-		];
-
-		_setWantedParticipants(newWantedParticipants);
-	}, [_setWantedParticipants, wantedStudents, wantedTeachers, wantedClasses, wantedRooms]);
-
-	const setAllOrNothingWantedParticipants = useCallback(
-		(newWantedParticipants: WantedParticipant[]) => {
-			const isChecked: boolean = newWantedParticipants.length > 0;
-
-			if (isChecked) {
-				setWantedStudents(students);
-				setWantedTeachers(teachers);
-				setWantedClasses(classes);
-				setWantedRooms(rooms);
-			} else {
-				setWantedStudents([]);
-				setWantedTeachers([]);
-				setWantedClasses([]);
-				setWantedRooms([]);
-			}
-		},
-		[
-			//
-			students,
-			setWantedStudents,
-			teachers,
-			setWantedTeachers,
-			classes,
-			setWantedClasses,
-			rooms,
-			setWantedRooms,
-		]
-	);
-
-	/**
-	 * naive way.
-	 * TODO optimize - this work is already done inside `ParticipantSubsetPicker`s,
-	 * we should use their `AllOrNothingCheckbox` selected/not selected state.
-	 */
-	const checkAreAllSelected = useCallback(
-		() =>
-			students.length + teachers.length + classes.length + rooms.length > 0 && //
-			students.every((p) => wantedStudents.includes(p)) &&
-			teachers.every((p) => wantedTeachers.includes(p)) &&
-			classes.every((p) => wantedClasses.includes(p)) &&
-			rooms.every((p) => wantedRooms.includes(p)),
-		[students, wantedStudents, teachers, wantedTeachers, classes, wantedClasses, rooms, wantedRooms]
-	);
-
-	/**
-	 * duplicate logic with the `subset` component.
-	 * perhaps we should not use `parseParticipants` and use labels
-	 * to filter real-time to avoid having to sync the different types
-	 * of participants. will see.
-	 */
-	const [areAllParticipantsSelected, setAreAllParticipantsSelected] = useState<boolean>(checkAreAllSelected());
-
-	useEffect(() => {
-		const areAll = checkAreAllSelected();
-		console.log("areAll", areAll);
-		setAreAllParticipantsSelected(areAll);
-	}, [checkAreAllSelected]);
 
 	return (
 		<>
 			<h1>{t("Participant picker")}</h1>
 
-			<TopLevelSubset<WantedParticipant>
-				subsetTitle="Everyone"
-				fullParticipantSubset={participants}
-				setWantedParticipants={setAllOrNothingWantedParticipants}
-				areAllParticipantsSelected={areAllParticipantsSelected}
-			>
-				<section>
-					{renderables.map(([fullSubset, wanted, setWanted, title]) => (
-						<ParticipantSubsetPicker
-							key={title}
-							subsetTitle={title}
-							participantSubset={fullSubset} //
-							wantedParticipants={wanted}
-							setWantedParticipants={setWanted}
-							isSelectedStateOverride={areAllParticipantsSelected || undefined}
-						/>
-					))}
-				</section>
-			</TopLevelSubset>
+			{!hierarchy ? null : (
+				<RecursiveParticipantHierarchy<WantedParticipant>
+					hierarchy={hierarchy}
+					wantedParticipants={wantedParticipants}
+					setWantedParticipants={_setWantedParticipants}
+				/>
+			)}
 		</>
 	);
 };
 
-interface ParticipantSubsetPickerProps {
-	participantSubset: string[];
-	wantedParticipants: string[];
-	setWantedParticipants: TSetQuery<string[]>;
-	subsetTitle: Extract<keyof Dictionary, "Everyone" | "Students" | "Teachers" | "Classes" | "Rooms">;
+interface ParticipantSubsetPickerProps<T extends WantedParticipant = WantedParticipant> {
+	participantSubset: T[];
+	wantedParticipants: T[];
+	setWantedParticipants: AllOrNothingCheckboxProps<T>["setWantedParticipants"];
 	hasSelectedExtraInfo?: boolean;
 	isSelectedStateOverride?: true | undefined;
 }
 
-export const ParticipantSubsetPicker: FC<ParticipantSubsetPickerProps> = ({
-	subsetTitle,
+function ParticipantSubsetPicker<T extends WantedParticipant = WantedParticipant>({
 	participantSubset: fullParticipantSubset,
 	wantedParticipants = [],
 	setWantedParticipants,
 	hasSelectedExtraInfo = false,
-	isSelectedStateOverride = undefined,
-}) => {
+}: PropsWithChildren<ParticipantSubsetPickerProps<T>>): ReactElement | null {
 	const getHowManyItemsPerRow = (totalItemCount: number, shouldFitIntoHowManyColumns: number): number =>
 		Math.ceil(totalItemCount / shouldFitIntoHowManyColumns);
 
 	const { desktop } = useWindow();
 
 	const handleCheckboxClick = useCallback(
-		(p) => (isSelected: boolean): void => {
+		(p: T) => (isSelected: boolean): void => {
 			startTransition(() => {
 				if (isSelected) {
 					setWantedParticipants([...wantedParticipants, p]);
 				} else {
-					setWantedParticipants(wantedParticipants.filter((x) => x !== p));
+					setWantedParticipants(wantedParticipants.filter((x) => x.text !== p.text));
 				}
 			});
 		},
 		[wantedParticipants, setWantedParticipants]
 	);
 
-	const checkAreAllSelected = useCallback(
-		(): boolean =>
-			isSelectedStateOverride || //
-			(fullParticipantSubset.length > 0 && fullParticipantSubset.every((s) => wantedParticipants.includes(s))),
-		[isSelectedStateOverride, fullParticipantSubset, wantedParticipants]
-	);
-
-	const [areAllParticipantsSelected, setAreAllParticipantsSelected] = useState<boolean>(checkAreAllSelected());
-
-	useEffect(() => {
-		setAreAllParticipantsSelected(checkAreAllSelected());
-	}, [checkAreAllSelected]);
-
 	return (
-		<TopLevelSubset
-			subsetTitle={subsetTitle}
-			areAllParticipantsSelected={areAllParticipantsSelected}
-			setWantedParticipants={setWantedParticipants}
-			fullParticipantSubset={fullParticipantSubset}
+		<ul
+			className={cx(
+				css`
+					display: grid;
+					grid-auto-flow: column;
+
+					grid-template-rows: repeat(${getHowManyItemsPerRow(fullParticipantSubset.length, 2)}, 1fr);
+
+					${desktop} {
+						grid-template-rows: repeat(
+							${getHowManyItemsPerRow(fullParticipantSubset.length, hasSelectedExtraInfo ? 4 : 6)},
+							1fr
+						);
+					}
+
+					text-align: left;
+				`
+			)}
 		>
-			<ul
-				className={cx(
-					css`
-						display: grid;
-						grid-auto-flow: column;
+			{fullParticipantSubset.map((p) => (
+				<li
+					key={p.text}
+					title={p.text}
+					className={css`
+						white-space: nowrap;
+						text-overflow: ellipsis;
+						overflow: hidden;
 
-						grid-template-rows: repeat(${getHowManyItemsPerRow(fullParticipantSubset.length, 2)}, 1fr);
+						/* cursor: pointer !important; */
+					`}
+				>
+					<Checkbox
+						labelStyles={css`
+							display: inline-block;
+							/* display: inline; */
+							width: 100%;
 
-						${desktop} {
-							grid-template-rows: repeat(
-								${getHowManyItemsPerRow(fullParticipantSubset.length, hasSelectedExtraInfo ? 4 : 6)},
-								1fr
-							);
-						}
-
-						text-align: left;
-					`
-				)}
-			>
-				{fullParticipantSubset.map((p) => (
-					<li
-						key={p}
-						title={p}
-						className={css`
 							white-space: nowrap;
 							text-overflow: ellipsis;
 							overflow: hidden;
 						`}
+						spanStyles={css``}
+						isSelectedStateOverride={wantedParticipants.map((wp) => wp.text).includes(p.text)}
+						handleClick={handleCheckboxClick(p)}
+						// left={
+						// 	<details
+						// 		className={css`
+						// 			display: inline-block;
+						// 		`}
+						// 	>
+						// 		{/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+						// 		<summary />
+
+						// 		<div>relatives and stuff</div>
+						// 	</details>
+						// }
 					>
-						<Checkbox
-							labelStyles={css`
-								display: inline-block;
-								/* display: inline; */
-								width: 100%;
-
-								white-space: nowrap;
-								text-overflow: ellipsis;
-								overflow: hidden;
-							`}
-							spanStyles={css``}
-							isSelectedStateOverride={wantedParticipants.includes(p)}
-							handleClick={handleCheckboxClick(p)}
-							// left={
-							// 	<details
-							// 		className={css`
-							// 			display: inline-block;
-							// 		`}
-							// 	>
-							// 		{/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-							// 		<summary />
-
-							// 		<div>relatives and stuff</div>
-							// 	</details>
-							// }
-						>
-							{p}
-						</Checkbox>
-					</li>
-				))}
-			</ul>
-		</TopLevelSubset>
+						{p.text}
+					</Checkbox>
+				</li>
+			))}
+		</ul>
 	);
-};
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface TopLevelSubsetProps<T = string> extends AllOrNothingCheckboxProps<T> {
-	//
 }
 
-function TopLevelSubset<T = string>({
-	children, //
-	areAllParticipantsSelected,
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface TopLevelSubsetProps<T extends WantedParticipant = WantedParticipant>
+	extends Omit<AllOrNothingCheckboxProps<T>, "fullParticipantSubset" | "groupName" | "areAllParticipantsSelected"> {
+	hierarchy: Hierarchy<unknown>; //
+	wantedParticipants: T[];
+}
+
+function RecursiveParticipantHierarchy<T extends WantedParticipant = WantedParticipant>({
+	hierarchy,
+	wantedParticipants,
 	setWantedParticipants,
-	fullParticipantSubset,
-	subsetTitle,
 }: PropsWithChildren<TopLevelSubsetProps<T>>): ReactElement | null {
+	const checkAreAllSelected = useCallback(
+		(): boolean =>
+			hierarchy.currentItems.length > 0 &&
+			hierarchy.currentItems.every((s) =>
+				// eslint-disable-next-line no-whitespace-before-property
+				wantedParticipants.map((p) => p.text).includes((s as WantedParticipant) /* TODO FIXME */.text)
+			), // TODO FIXME
+		[hierarchy.currentItems, wantedParticipants]
+	);
+
+	const areAllParticipantsSelected: boolean = checkAreAllSelected();
+
+	const t = useTranslation();
+
+	if (!hierarchy) {
+		return null;
+	}
+
+	const groupName: string =
+		hierarchy.groupName in en
+			? (t((hierarchy.groupName as unknown) as keyof Dictionary) as string)
+			: hierarchy.groupName;
+
 	return (
 		<article>
 			<AllOrNothingCheckbox<T>
-				subsetTitle={subsetTitle}
+				groupName={groupName}
 				areAllParticipantsSelected={areAllParticipantsSelected}
 				setWantedParticipants={setWantedParticipants}
-				fullParticipantSubset={fullParticipantSubset}
+				fullParticipantSubset={hierarchy.currentItems as T[]} // TODO FIXME
 			/>
 
-			<Indent>{children}</Indent>
+			<Indent>
+				{(hierarchy as any) /* TODO FIXME */?.children! ? (
+					(hierarchy as any) /* TODO FIXME */
+						.children!.map((child?: Hierarchy<unknown>) =>
+							child && !child.currentItems?.length ? (
+								<div>error - child with empty current items ({child.currentItems?.length}) </div>
+							) : !child ? (
+								<div>error - empty child!</div>
+							) : (
+								<RecursiveParticipantHierarchy<T>
+									key={child.groupName}
+									hierarchy={child}
+									wantedParticipants={wantedParticipants}
+									setWantedParticipants={setWantedParticipants}
+								/>
+							)
+						)
+				) : (
+					<section>
+						<ParticipantSubsetPicker<T>
+							participantSubset={hierarchy.currentItems as T[]} // TODO FIXME
+							wantedParticipants={wantedParticipants}
+							setWantedParticipants={setWantedParticipants}
+						/>
+					</section>
+				)}
+			</Indent>
 		</article>
 	);
 }
 
-interface AllOrNothingCheckboxProps<T = string> {
-	subsetTitle: Extract<keyof Dictionary, "Everyone" | "Students" | "Teachers" | "Classes" | "Rooms">;
+interface AllOrNothingCheckboxProps<T extends WantedParticipant = WantedParticipant> {
+	groupName: string;
 	areAllParticipantsSelected: boolean;
 	fullParticipantSubset: T[];
-	setWantedParticipants: (newWantedParticipants: T[]) => void;
+	setWantedParticipants: SetStateArgs<T[]>;
 }
 
-function AllOrNothingCheckbox<T = string>({
-	subsetTitle,
+function AllOrNothingCheckbox<T extends WantedParticipant = WantedParticipant>({
+	groupName,
 	areAllParticipantsSelected, //
 	setWantedParticipants,
 	fullParticipantSubset,
 }: PropsWithChildren<AllOrNothingCheckboxProps<T>>): ReactElement | null {
-	const t = useTranslation();
-
 	return (
 		<h2
 			className={css`
@@ -385,15 +260,30 @@ function AllOrNothingCheckbox<T = string>({
 			<Checkbox
 				flex
 				isSelectedStateOverride={areAllParticipantsSelected}
-				handleClick={(areAllSelected: boolean): void => {
-					if (areAllSelected) {
-						setWantedParticipants(fullParticipantSubset);
+				handleClick={(isNowChecked: boolean): void => {
+					if (isNowChecked) {
+						setWantedParticipants((currentlyWantedParticipants) => [
+							/**
+							 * remove currently selected ones that are inside our `fullParticipantSubset`
+							 * in case they overlap, and then add all of our `fullParticipantSubset`
+							 * (ensures unique-ness)
+							 */
+							...currentlyWantedParticipants.filter(
+								(wp) => !fullParticipantSubset.map((x) => x.text).includes(wp.text)
+							),
+							...fullParticipantSubset,
+						]);
 					} else {
-						setWantedParticipants([]);
+						// setWantedParticipants([]);
+						setWantedParticipants((currentlyWantedParticipants) =>
+							currentlyWantedParticipants.filter(
+								(wp) => !fullParticipantSubset.map((x) => x.text).includes(wp.text)
+							)
+						);
 					}
 				}}
 			>
-				{t(subsetTitle)}
+				{groupName}
 			</Checkbox>
 		</h2>
 	);

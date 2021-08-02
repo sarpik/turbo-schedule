@@ -21,7 +21,7 @@
 	},
 	"devDependencies": {
 		"ts-node-dev": "1.0.0-pre.44",
-		"typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/74014/artifacts?artifactName=tgz&fileId=53B4D99407A93B4AF6FAEF8437B02126A8C7FEC62F1C3307DAA098F75D2CE5D602&fileName=/typescript-4.0.0-nsiders.20200515.tgz"
+		"typescript": "4.3.5"
 	},
 	"repository": {
 		"type": "git",
