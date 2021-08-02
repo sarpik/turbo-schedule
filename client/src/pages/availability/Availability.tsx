@@ -1,4 +1,4 @@
-/* eslint-disable indent, no-multi-str */
+/* eslint-disable indent, no-multi-str, flowtype/space-after-type-colon */
 
 import React, { FC, useState, useEffect, useRef, useReducer, useCallback, useMemo, startTransition } from "react";
 import axios from "axios";
@@ -6,11 +6,12 @@ import { cx, css } from "emotion";
 
 import { Availability as IAvailability, Participant, WantedParticipant } from "@turbo-schedule/common";
 
+import { useFetchParticipants } from "../../hooks/fetch/useFetchParticipants";
 import { ParticipantListItem } from "../../components/studentSchedule/ParticipantList";
 import { Dictionary } from "../../i18n/i18n";
 import { useWindow } from "../../hooks/useWindow";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useQueryFor, EncoderDecoder } from "../../hooks/useQueryFor";
+import { useQueryFor, EncoderDecoder, arrayEncoderDecoder } from "../../hooks/useQueryFor";
 import { Navbar } from "../../components/navbar/Navbar";
 import { useTranslation } from "../../i18n/useTranslation";
 import { ParticipantPicker } from "./ParticipantPicker";
@@ -136,18 +137,72 @@ export const Availability: FC = () => {
 
 	const { desktop, notDesktop } = useWindow();
 
-	const [wantedParticipants, __setWantedParticipants] = useState<WantedParticipant[]>([]);
+	const [participants] = useFetchParticipants();
 
-	const [hasUpsyncedWantedParticipants, setHasUpsyncedWantedParticipants] = useState(false);
+	const [wantedParticipants, __setWantedParticipants] = useQueryFor<WantedParticipant[]>("p", {
+		/**
+		 * re-run once the dependencies change
+		 */
+		dependencies: [participants],
+		encode: (wps: WantedParticipant[]) => arrayEncoderDecoder.encode(wps.map((wp) => wp.text)),
+		decode: (participantsString: string) => {
+			/**
+			 * return an empty array, since we need the `participants`
+			 * before doing anything.
+			 *
+			 * hence, we've listed the `participants` in the `dependencies` array
+			 *
+			 */
+			if (!participants.length) {
+				return [];
+			}
+
+			const participantStrings: string[] = arrayEncoderDecoder.decode(participantsString);
+			const participantsTbd: (Participant | undefined)[] = participantStrings.map((participantStr) =>
+				participants.find((participant) => participant.text === participantStr)
+			);
+
+			if (participantsTbd.includes(undefined)) {
+				/**
+				 * TODO FIXME - add information pop-up to the user
+				 * to inform about which users were missing!
+				 */
+
+				throw new Error("fetched participants did not include a wanted participant from the URL query");
+			}
+
+			const wps: WantedParticipant[] = (participantsTbd as Participant[]).map((wp) => ({
+				text: wp.text,
+				labels: wp.labels,
+			}));
+
+			return wps;
+		},
+	});
+
+	const [hasHadAChanceToUpdateWantedParticipants, setHasHadAChanceToUpdateWantedParticipants] = useState(false);
+
+	useEffect(() => {
+		if (participants.length) {
+			setHasHadAChanceToUpdateWantedParticipants(true);
+		}
+	}, [participants, wantedParticipants]);
 
 	const setWantedParticipants = useCallback(
-		(newWantedParticipants: WantedParticipant[]): void => {
+		(
+			newWantedParticipants:
+				| WantedParticipant[]
+				| ((currentlyWantedParticipants: WantedParticipant[]) => WantedParticipant[])
+		): void => {
 			startTransition(() => {
-				__setWantedParticipants(newWantedParticipants);
-				setHasUpsyncedWantedParticipants(true);
+				if (typeof newWantedParticipants === "function") {
+					__setWantedParticipants(newWantedParticipants(wantedParticipants));
+				} else {
+					__setWantedParticipants(newWantedParticipants);
+				}
 			});
 		},
-		[__setWantedParticipants]
+		[__setWantedParticipants, wantedParticipants]
 	);
 
 	useEffect(() => {
@@ -158,7 +213,7 @@ export const Availability: FC = () => {
 			 * freeing up screen space for a wider participant picker
 			 */
 
-			if (hasUpsyncedWantedParticipants) {
+			if (hasHadAChanceToUpdateWantedParticipants) {
 				/**
 				 * only resets the params if it's not the first mount
 				 *
@@ -169,6 +224,7 @@ export const Availability: FC = () => {
 				 * the selected day & time, and if there were 0 selected participants - we do want to remove,
 				 * which is what we're doing here:
 				 */
+
 				setSelectedDay(invalidEnDeVal);
 				setSelectedTime(invalidEnDeVal);
 			}
@@ -198,12 +254,13 @@ export const Availability: FC = () => {
 			isCancelled = true;
 		};
 	}, [
-		hasUpsyncedWantedParticipants, //
 		wantedParticipants,
 		invalidEnDeVal,
 		setSelectedDay,
 		setSelectedTime,
 		setAvailability,
+		participants,
+		hasHadAChanceToUpdateWantedParticipants,
 	]);
 
 	return (
@@ -676,6 +733,7 @@ export const Availability: FC = () => {
 						`}
 					>
 						<ParticipantPicker
+							participants={participants}
 							hasSelectedExtraInfo={hasSelectedExtraInfo} //
 							// handleChange={handleWantedParticipantChange}
 							wantedParticipants={wantedParticipants}

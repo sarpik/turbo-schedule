@@ -81,6 +81,8 @@ export const _useTranslation = <Translations extends ITranslations>(
  */
 export const useTranslation = () => _useTranslation(CurrentLangContext, translations);
 
+export type Translator = ReturnType<typeof useTranslation>;
+
 // const t = useTranslation();
 
 // const foo = t`foobar`;

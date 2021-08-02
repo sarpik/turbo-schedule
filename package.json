@@ -15,7 +15,9 @@
 		],
 		"nohoist": [
 			"client/eslint",
-			"client/eslint/**"
+			"client/eslint/**",
+			"typescript",
+			"typescript/**"
 		]
 	},
 	"engines": {
@@ -36,7 +38,7 @@
 		"updts": "yarn lerna add typescript@latest --dev",
 		"copy-prod-data": "bash ./database/copy-prod-data.sh",
 		"-----": "-----",
-		"watch:ts": "tsc -b -w",
+		"watch:ts": "yarn tsc -b -w",
 		"watch:server": "yarn --cwd ./server/ watch:server",
 		"watch:client": "yarn --cwd ./client start",
 		"dev": "concurrently --raw --kill-others --names \"0: tsc,1: server,2: client\" \"yarn watch:ts\" \"yarn watch:server\" \"yarn watch:client\"",
@@ -59,7 +61,7 @@
 		"docker:login:my-current-workspace": "docker login",
 		"docker:push:my-current-workspace": "docker push kipras/turbo-schedule:$(git rev-parse HEAD)$VERSION_SUFFIX",
 		"docker:complete-deploy:my-current-workspace": "bash ./deploy.sh \"$(git rev-parse HEAD)$VERSION_SUFFIX\"",
-		"docker:deploy:my-current-workspace": "echo $VERSION_SUFFIX && yarn docker:build:commit && yarn docker:login:commit && yarn docker:push:commit && yarn docker:complete-deploy:commit && echo $(git rev-parse HEAD)$VERSION_SUFFIX",
+		"docker:deploy:my-current-workspace": "echo $VERSION_SUFFIX && yarn docker:build:my-current-workspace && yarn docker:login:my-current-workspace && yarn docker:push:my-current-workspace && yarn docker:complete-deploy:my-current-workspace && echo $(git rev-parse HEAD)$VERSION_SUFFIX",
 		"purge:build": "npx rimraf ./client/build ./*/dist/ ./dist/ ./*/tsconfig.tsbuildinfo",
 		"purge:modules": "npx rimraf ./*/node_modules/ ./node_modules/",
 		"purge:all": "yarn purge:build & yarn purge:modules & echo \"Do NOT forget to re-setup: \n\nyarn setup\n\""
@@ -88,6 +90,6 @@
 		"postinstall-postinstall": "2.0.0",
 		"prettier": "1.16.4",
 		"rimraf": "3.0.0",
-		"typescript": "https://typescript.visualstudio.com/cf7ac146-d525-443c-b23c-0d58337efebc/_apis/build/builds/74014/artifacts?artifactName=tgz&fileId=53B4D99407A93B4AF6FAEF8437B02126A8C7FEC62F1C3307DAA098F75D2CE5D602&fileName=/typescript-4.0.0-nsiders.20200515.tgz"
+		"typescript": "4.3.5"
 	}
 }

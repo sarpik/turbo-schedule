@@ -1,0 +1,21 @@
+diff --git a/node_modules/typescript/lib/tsc.js b/node_modules/typescript/lib/tsc.js
+index 78c5ec2..7d6c586 100644
+--- a/node_modules/typescript/lib/tsc.js
++++ b/node_modules/typescript/lib/tsc.js
+@@ -13,6 +13,7 @@ See the Apache Version 2.0 License for specific language governing permissions
+ and limitations under the License.
+ ***************************************************************************** */
+
++console.log("custom ts w/ (* 4) depth limits");
+
+ "use strict";
+ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+@@ -49264,7 +49265,7 @@ var ts;
+             if (!couldContainTypeVariables(type)) {
+                 return type;
+             }
+-            if (instantiationDepth === 50 || instantiationCount >= 5000000) {
++            if (instantiationDepth === (50 * 4) || instantiationCount >= (5000000 * 4)) {
+                 ts.tracing === null || ts.tracing === void 0 ? void 0 : ts.tracing.instant("checkTypes", "instantiateType_DepthLimit", { typeId: type.id, instantiationDepth: instantiationDepth, instantiationCount: instantiationCount });
+                 error(currentNode, ts.Diagnostics.Type_instantiation_is_excessively_deep_and_possibly_infinite);
+                 return errorType;

@@ -16,6 +16,8 @@ import {
 	MinimalLesson,
 	WantedParticipant,
 	getDefaultParticipant,
+	createParticipantHierarchy,
+	ParticipantHierarchyManual,
 } from "@turbo-schedule/common";
 
 import { WithErr, withSender } from "../../middleware/withSender";
@@ -82,6 +84,29 @@ router.get<any, ParticipantRandomRes>("/random", withSender({ participants: [] }
 		return send(500, { err });
 	}
 });
+
+export interface ParticipantHierarchyRes extends WithErr {
+	hierarchy: ParticipantHierarchyManual;
+}
+
+router.get<any, ParticipantHierarchyRes>(
+	"/hierarchy",
+	withSender({ hierarchy: createParticipantHierarchy([]) }), // TODO - is this even working?
+	async (_req, res) => {
+		const send = res.sender;
+
+		try {
+			const db: Db = await initDb();
+			const participants: Participant[] = await db.get("participants").value();
+
+			const hierarchy: ParticipantHierarchyManual = createParticipantHierarchy(participants);
+
+			return send(200, { hierarchy });
+		} catch (err) {
+			return send(500, { err });
+		}
+	}
+);
 
 export interface ParticipantCommonAvailabilityRes extends WithErr {
 	minDayIndex: number;

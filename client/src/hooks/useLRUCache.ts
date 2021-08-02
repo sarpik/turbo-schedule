@@ -17,7 +17,8 @@ export function createUsePersistedLRUCache<T = unknown>(
 	maxSizeIncl: number,
 	newestOrOldest: "newest" | "oldest" = "newest"
 ) {
-	return function usePersistedLRUCache(): [T[], (value: T) => void] {
+	// return function usePersistedLRUCache(): [T[], (value: T) => void] {
+	return function usePersistedLRUCache() {
 		const cache = useRef(LRUCache<T>(maxSizeIncl));
 
 		const [_persistedCache, _setPersistedCache] = useLocalStorage<T[]>(key, []);
@@ -59,7 +60,10 @@ export function createUsePersistedLRUCache<T = unknown>(
 			[_updatePersistedCache]
 		);
 
-		return [newestOrOldest === "newest" ? cache.current.getAllNewToOld() : cache.current.getAllOldToNew(), add];
+		return [
+			newestOrOldest === "newest" ? cache.current.getAllNewToOld() : cache.current.getAllOldToNew(),
+			add,
+		] as const;
 	};
 }
 

@@ -3,7 +3,8 @@
  */
 import { useState, useCallback } from "react";
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+// export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+export function useLocalStorage<T>(key: string, initialValue: T) {
 	// State to store our value
 
 	// Pass initial state function to useState so logic is only executed once
@@ -55,5 +56,5 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
 		[key]
 	);
 
-	return [storedValue, setValue];
+	return [storedValue, setValue] as const;
 }
